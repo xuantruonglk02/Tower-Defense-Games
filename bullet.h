@@ -9,11 +9,8 @@
 
 class Bullet {
 public:
-
     Bullet(SDL_Renderer* &gRenderer);
     ~Bullet();
-
-    SDL_Texture* getTexture();
 
     double getFirstX();
     double getFirstY();
@@ -27,11 +24,13 @@ public:
     void setY(double y);
     void setDistance(double d);
 
-    void drawBullet(SDL_Renderer* &gRenderer);
+    void drawToRender(SDL_Renderer* &gRenderer);
 
-    void updatePos();
+    void updatePos(int k);
 
     bool outOfScreen();
+
+    int getDamage();
 
 private:
 
@@ -40,5 +39,7 @@ private:
     double firstX, firstY;
     double bulletX, bulletY;
     double dis;
+
+    int damage;
 
 };

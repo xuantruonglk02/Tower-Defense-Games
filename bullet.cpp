@@ -2,14 +2,13 @@
 
 Bullet::Bullet(SDL_Renderer* &gRenderer) {
     bTexture = loadTexture(gRenderer, BULLET_PATH);
+    damage = 1;
 }
 
 Bullet::~Bullet() {
     SDL_DestroyTexture(bTexture);
     bTexture = NULL;
 }
-
-SDL_Texture* Bullet::getTexture() {return bTexture;}
 
 double Bullet::getFirstX() {return firstX;}
 double Bullet::getFirstY() {return firstY;}
@@ -23,7 +22,7 @@ void Bullet::setX(double x) {bulletX = x;}
 void Bullet::setY(double y) {bulletY = y;}
 void Bullet::setDistance(double d) {dis = d;}
 
-void Bullet::drawBullet(SDL_Renderer* &gRenderer) {
+void Bullet::drawToRender(SDL_Renderer* &gRenderer) {
     SDL_Rect dstrect;
     dstrect.x = bulletX - BULLET_SIZE/2;
     dstrect.y = bulletY - BULLET_SIZE/2;
@@ -31,10 +30,10 @@ void Bullet::drawBullet(SDL_Renderer* &gRenderer) {
     SDL_RenderCopy(gRenderer, bTexture, NULL, &dstrect);
 }
 
-void Bullet::updatePos() {
-    bulletX = (bulletX - firstX) * (dis + BULLET_SPEED) / dis + firstX;
-    bulletY = (bulletY - firstY) * (dis + BULLET_SPEED) / dis + firstY;
-    dis = dis + BULLET_SPEED;
+void Bullet::updatePos(int k) {
+    bulletX = (bulletX - firstX) * (dis + BULLET_SPEED[k]) / dis + firstX;
+    bulletY = (bulletY - firstY) * (dis + BULLET_SPEED[k]) / dis + firstY;
+    dis = dis + BULLET_SPEED[k];
 }
 
 bool Bullet::outOfScreen() {
@@ -43,3 +42,5 @@ bool Bullet::outOfScreen() {
         return true;
     return false;
 }
+
+int Bullet::getDamage() {return damage;}
