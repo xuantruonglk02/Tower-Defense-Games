@@ -24,8 +24,21 @@ void Enemy::updatePos() {
 }
 
 bool Enemy::isSuccess() {
-    if (dstrect.x + ENEMY_SIZE/2 >= PLAY_ZONE_X + PLAY_ZONE_W) {
+    if (dstrect.x >= PLAY_ZONE_X + PLAY_ZONE_W) {
         return true;
     }
     return false;
+}
+
+bool Enemy::getHit(double bX, double bY, int damamge) {
+    if (sqrt((dstrect.x + ENEMY_SIZE/2 - bX)*(dstrect.x + ENEMY_SIZE/2 - bX) + (dstrect.y + ENEMY_SIZE/2 - bY)*(dstrect.y + ENEMY_SIZE/2 - bY)) <= ENEMY_SIZE/2 + BULLET_SIZE/2) {
+        hp -= damamge;
+        return true;
+    }
+    return false;
+}
+
+bool Enemy::isDead() {
+    if (hp <= 0) return true;
+    else return false;
 }

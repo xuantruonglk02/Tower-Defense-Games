@@ -9,7 +9,7 @@
 
 class Bullet {
 public:
-    Bullet(SDL_Renderer* &gRenderer);
+    Bullet(SDL_Renderer* &gRenderer, double fX, double fY, double bX, double bY, double d, int _damage);
     ~Bullet();
 
     double getFirstX();

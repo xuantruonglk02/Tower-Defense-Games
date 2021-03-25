@@ -15,7 +15,7 @@ const int BUTTON_H = 70;
 const int GUN_SIZE = 31;
 const int ENEMY_SIZE = 31;
 const int BULLET_SIZE = 13;
-const int BULLET_SPEED[] = {10, 5};
+const int BULLET_SPEED[] = {10};
 
 const std::string WINDOW_TITLE = "An Implementation of Code.org Painter";
 const std::string WELCOME = "assets/welcome.png";
@@ -31,6 +31,9 @@ const std::string GUN_PATH[6] = {"assets/gun1.png",
                                     "assets/gun4.png",
                                     "assets/gun5.png",
                                     "assets/gun6.png",};
-const std::string ENEMY_PATH[1] = {"assets/enemy.png"};
-const int E_HP[1] = {5};
+const std::string ENEMY_PATH[3] = {"assets/enemy1.png",
+                                    "assets/enemy2.png",
+                                    "assets/enemy3.png"};
+const int DAMAGE[6] = {1, 2, 3, 4, 5, 6};
+const int E_HP[3] = {50, 200, 500};
 const std::string BULLET_PATH = "assets/bullet.png";

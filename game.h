@@ -3,8 +3,6 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -13,6 +11,7 @@
 #include "utils.h"
 #include "menu.h"
 #include "control_board.h"
+#include "wave.h"
 #include "enemy.h"
 #include "gun.h"
 #include "bullet.h"
@@ -29,16 +28,26 @@ public:
     void drawEnemy();
     void drawGun();
     void drawBullets();
+    void noticeWaveCurrent();
 
+    void waitingForNextWave();
+
+    // call enemy
+    void callEnemy();
     // add bullet to list
     void addGun(double x, double y, int type);
     // add a enemy
     void addEnemy();
+    // fire
+    void addBullet(double gX, double gY, double eX, double eY, int dmg);
 
     // fire
     void freeFire();
 
+    //
+    void treatWhenEnemyGetHit();
     // remove
+    void remoteEnemyDied();
     void removeBulletOutScreen();
     void removeEnemyFinished();
 
@@ -68,25 +77,29 @@ private:
     // control board
     ctBoard* ctb = NULL;
 
+    // wave
+    vector <Wave> wave;
+    int curWave;
+
+    int waitTimeTransWave = 5000;
+    int waitTimeCallEnemy = 700;
+
     // enemy
     vector <Enemy*> enemys;
-    int enemysSize;
 
     // gun
     vector <Gun*> guns;
-    int gunsSize;
 
     // bullet
     vector <Bullet*> bullets;
-    int bulletsSize;
 
     SDL_Event e;
 
-    clock_t begin;
+    Uint32 timeID;
 
     double mouseX, mouseY;
     int clickX, clickY;
     bool mouseDown, dragging;
-
+    bool callingEnemy;
     bool quit;
 };

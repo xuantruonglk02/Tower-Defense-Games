@@ -26,6 +26,7 @@ public:
 private:
     SDL_Texture* texture = NULL;
     SDL_Rect dstrect;
+    double gX, gY;
     int type;
     double range;
     int damage;

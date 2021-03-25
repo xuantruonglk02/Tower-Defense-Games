@@ -47,6 +47,8 @@
 		<Unit filename="menu.h" />
 		<Unit filename="utils.cpp" />
 		<Unit filename="utils.h" />
+		<Unit filename="wave.cpp" />
+		<Unit filename="wave.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

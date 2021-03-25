@@ -1,8 +1,11 @@
 #include "bullet.h"
 
-Bullet::Bullet(SDL_Renderer* &gRenderer) {
+Bullet::Bullet(SDL_Renderer* &gRenderer, double fX, double fY, double bX, double bY, double d, int _damage) {
     bTexture = loadTexture(gRenderer, BULLET_PATH);
-    damage = 1;
+    firstX = fX; firstY = fY;
+    bulletX = bX; bulletY = bY;
+    dis = d;
+    damage = _damage;
 }
 
 Bullet::~Bullet() {
