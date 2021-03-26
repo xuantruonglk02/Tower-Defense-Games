@@ -25,6 +25,8 @@ const std::string QUIT = "assets/quit.png";
 const std::string PAUSE = "assets/pause.png";
 const std::string MAP = "assets/map.png";
 const std::string CT_BG = "assets/control_bg.png";
+const std::string BASE = "assets/base.png";
+const std::string HP_BAR = "assets/hp_bar.png";
 const std::string GUN_PATH[6] = {"assets/gun1.png",
                                     "assets/gun2.png",
                                     "assets/gun3.png",
@@ -34,6 +36,9 @@ const std::string GUN_PATH[6] = {"assets/gun1.png",
 const std::string ENEMY_PATH[3] = {"assets/enemy1.png",
                                     "assets/enemy2.png",
                                     "assets/enemy3.png"};
-const int DAMAGE[6] = {1, 2, 3, 4, 5, 6};
-const int E_HP[3] = {50, 200, 500};
 const std::string BULLET_PATH = "assets/bullet.png";
+
+const int G_DAMAGE[] = {1, 2, 3, 4, 5, 6};
+const int E_HP[] = {50, 200, 500};
+const int E_DAMAGE[] = {10, 20, 30};
+const int E_SPEED[] = {1, 1, 1};

@@ -10,11 +10,12 @@
 
 class Enemy {
 public:
-    Enemy(SDL_Renderer* &gRenderer, double x, double y, int _type);
+    Enemy(SDL_Renderer* &gRenderer, int y, int _type);
     ~Enemy();
 
-    double getX();
-    double getY();
+    int getX();
+    int getY();
+    int getDam();
 
     void drawToRender(SDL_Renderer* &gRenderer);
 
@@ -29,6 +30,7 @@ private:
     SDL_Texture* eTexture;
     SDL_Rect dstrect;
     int type;
-    int eSpeed = 1;
+    int speed;
+    int damage;
     int hp;
 };

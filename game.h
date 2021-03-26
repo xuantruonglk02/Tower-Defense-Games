@@ -11,6 +11,8 @@
 #include "utils.h"
 #include "menu.h"
 #include "control_board.h"
+#include "map.h"
+#include "base.h"
 #include "wave.h"
 #include "enemy.h"
 #include "gun.h"
@@ -25,6 +27,7 @@ public:
     // copy texture to renderer
     void drawMap();
     void drawControlBoard();
+    void drawBase();
     void drawEnemy();
     void drawGun();
     void drawBullets();
@@ -36,8 +39,6 @@ public:
     void callEnemy();
     // add bullet to list
     void addGun(double x, double y, int type);
-    // add a enemy
-    void addEnemy();
     // fire
     void addBullet(double gX, double gY, double eX, double eY, int dmg);
 
@@ -76,6 +77,9 @@ private:
 
     // control board
     ctBoard* ctb = NULL;
+    // map
+    // base
+    Base* base = NULL;
 
     // wave
     vector <Wave> wave;

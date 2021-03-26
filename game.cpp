@@ -5,7 +5,11 @@ void Game::drawMap() {
 }
 
 void Game::drawControlBoard() {
-    ctb->drawToRender(gRenderer);
+    ctb->drawToRender(gRenderer, base->getHPRate());
+}
+
+void Game::drawBase() {
+    base->drawToRender(gRenderer);
 }
 
 void Game::drawEnemy() {
@@ -54,11 +58,11 @@ void Game::callEnemy() {
         timeID = SDL_GetTicks();
 
         // add enemy
-        enemys.push_back(new Enemy(gRenderer, 0, PLAY_ZONE_Y + PLAY_ZONE_H/2,wave[curWave].nextEnemy()));
+        enemys.push_back(new Enemy(gRenderer, 1*50+25 + PLAY_ZONE_Y,wave[curWave].nextEnemy()));
         return;
     } else {
         if (SDL_GetTicks() - timeID >= waitTimeCallEnemy) {
-            enemys.push_back(new Enemy(gRenderer, 0, PLAY_ZONE_Y + PLAY_ZONE_H/2,wave[curWave].nextEnemy()));
+            enemys.push_back(new Enemy(gRenderer, 1*50+25 + PLAY_ZONE_Y,wave[curWave].nextEnemy()));
             timeID = SDL_GetTicks();
         }
     }
@@ -67,10 +71,6 @@ void Game::callEnemy() {
 
 void Game::addGun(double x, double y, int type) {
     guns.push_back(new Gun(gRenderer, x, y, type));
-}
-
-void Game::addEnemy() {
-    enemys.push_back(new Enemy(gRenderer, 0, PLAY_ZONE_Y + PLAY_ZONE_H/2, 0));
 }
 
 void Game::addBullet(double gX, double gY, double eX, double eY, int dmg) {
@@ -132,6 +132,7 @@ void Game::removeBulletOutScreen() {
 void Game::removeEnemyFinished() {
     for (int i = enemys.size()-1; i >= 0; i--) {
         if (enemys[i]->isSuccess()) {
+            base->setHP(enemys[i]->getDam());
             delete enemys[i];
             enemys.erase(enemys.begin() + i);
         }
@@ -170,6 +171,7 @@ void Game::setUp() {
     mapTexture = loadTexture(gRenderer, MAP);
 
     ctb = new ctBoard(gRenderer);
+    base = new Base(gRenderer, 5);
 
     // read enemy wave data
     if (!readWaveData(wave)) {
@@ -185,6 +187,7 @@ void Game::setUp() {
 void Game::renderCurrent() {
     drawMap();
     drawControlBoard();
+    drawBase();
 
     noticeWaveCurrent();
 
@@ -227,8 +230,8 @@ void Game::play() {
 
         if (curWave == wave.size()) break;
         else {
-        if (wave[curWave].started == false) waitingForNextWave();
-        if (wave[curWave].started == true) callEnemy();
+            if (wave[curWave].started == false) waitingForNextWave();
+            if (wave[curWave].started == true) callEnemy();
         }
 
         freeFire();
@@ -240,6 +243,8 @@ void Game::play() {
         removeEnemyFinished();
 
         renderCurrent();
+
+        if (base->lose()) quit = true;
 
         SDL_RenderPresent(gRenderer);
 

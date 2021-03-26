@@ -1,10 +1,12 @@
 #include "enemy.h"
 
-Enemy::Enemy(SDL_Renderer* &gRenderer, double x, double y, int _type) {
+Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
     eTexture = loadTexture(gRenderer, ENEMY_PATH[_type]);
     dstrect.h = ENEMY_SIZE; dstrect.w = ENEMY_SIZE;
-    dstrect.x = x - ENEMY_SIZE/2; dstrect.y = y - ENEMY_SIZE/2;
+    dstrect.x = -ENEMY_SIZE/2; dstrect.y = y - ENEMY_SIZE/2;
     hp = E_HP[_type];
+    speed = E_SPEED[_type];
+    damage = E_DAMAGE[_type];
     type = _type;
 }
 Enemy::~Enemy() {
@@ -12,15 +14,16 @@ Enemy::~Enemy() {
     eTexture = NULL;
 }
 
-double Enemy::getX() {return dstrect.x + ENEMY_SIZE/2;}
-double Enemy::getY() {return dstrect.y + ENEMY_SIZE/2;}
+int Enemy::getX() {return dstrect.x + ENEMY_SIZE/2;}
+int Enemy::getY() {return dstrect.y + ENEMY_SIZE/2;}
+int Enemy::getDam() {return damage;}
 
 void Enemy::drawToRender(SDL_Renderer* &gRenderer) {
     SDL_RenderCopy(gRenderer, eTexture, NULL, &dstrect);
 }
 
 void Enemy::updatePos() {
-    dstrect.x += eSpeed;
+    dstrect.x += speed;
 }
 
 bool Enemy::isSuccess() {

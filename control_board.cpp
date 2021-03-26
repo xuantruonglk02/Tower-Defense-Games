@@ -2,6 +2,7 @@
 
 ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
     cTexture = loadTexture(gRenderer, CT_BG);
+    hpbTexture = loadTexture(gRenderer, HP_BAR);
     for (int i = 0; i < 6; i++) {
         gunTextures[i] = loadTexture(gRenderer, GUN_PATH[i]);
     }
@@ -15,14 +16,30 @@ ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
 
 }
 ctBoard::~ctBoard() {
+    SDL_DestroyTexture(cTexture);
+    SDL_DestroyTexture(hpbTexture);
+    cTexture = NULL;
+    hpbTexture = NULL;
     for (int i = 0; i < 6; i++) {
-        delete gunTextures[i];
+        SDL_DestroyTexture(gunTextures[i]);
         gunTextures[i] = NULL;
     }
 }
 
-void ctBoard::drawToRender(SDL_Renderer* &gRenderer) {
+void ctBoard::drawToRender(SDL_Renderer* &gRenderer, double rate) {
     SDL_RenderCopy(gRenderer, cTexture, NULL, NULL);
+    drawHPBar(gRenderer, rate);
+    drawGuns(gRenderer);
+}
+
+void ctBoard::drawHPBar(SDL_Renderer* &gRenderer, double rate) {
+    dstrect.h = 20; dstrect.w = (int)(rate * 484);
+    dstrect.x = 308; dstrect.y = 50;
+    SDL_RenderCopy(gRenderer, hpbTexture, NULL, &dstrect);
+}
+
+void ctBoard::drawGuns(SDL_Renderer* &gRenderer) {
+    // draw 6 guns
     dstrect.h = GUN_SIZE; dstrect.w = GUN_SIZE;
     for (int i = 0; i < 6; i++) {
         dstrect.x = gunItemXPos[i]; dstrect.y = gunItemYPos[i];

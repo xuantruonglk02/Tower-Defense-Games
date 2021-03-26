@@ -7,7 +7,7 @@ Gun::Gun(SDL_Renderer* &gRenderer, double x, double y, int _type) {
     dstrect.x = x - GUN_SIZE/2; dstrect.y = y - GUN_SIZE/2;
     dstrect.h = GUN_SIZE; dstrect.w = GUN_SIZE;
     range = 150;
-    damage = DAMAGE[_type];
+    damage = G_DAMAGE[_type];
 
 }
 Gun::~Gun() {
