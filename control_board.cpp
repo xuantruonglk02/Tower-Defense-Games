@@ -1,8 +1,8 @@
 #include "control_board.h"
 
 ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
-    cTexture = loadTexture(gRenderer, CT_BG);
-    hpbTexture = loadTexture(gRenderer, HP_BAR);
+    cTexture = loadTexture(gRenderer, CTBG_PATH);
+    hpbTexture = loadTexture(gRenderer, HPBAR_PATH);
     for (int i = 0; i < 6; i++) {
         gunTextures[i] = loadTexture(gRenderer, GUN_PATH[i]);
     }

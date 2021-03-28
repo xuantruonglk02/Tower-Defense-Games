@@ -7,6 +7,7 @@
 
 #include "config.h"
 #include "utils.h"
+#include "map.h"
 
 class Enemy {
 public:
@@ -19,7 +20,7 @@ public:
 
     void drawToRender(SDL_Renderer* &gRenderer);
 
-    void updatePos();
+    void updatePos(const vector<int> &dir, const vector<int> &xRoad, const vector<int> &yRoad);
 
     bool isSuccess();
     
@@ -33,4 +34,5 @@ private:
     int speed;
     int damage;
     int hp;
+    int curPos;
 };

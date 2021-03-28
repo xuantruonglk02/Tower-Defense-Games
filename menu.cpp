@@ -1,10 +1,10 @@
 #include "menu.h"
 
 Menu::Menu(SDL_Renderer* &gRenderer) {
-    welcome = loadTexture(gRenderer, WELCOME);
-    pButton = loadTexture(gRenderer, PLAY);
-    oButton = loadTexture(gRenderer, OPTIONS);
-    qButton = loadTexture(gRenderer, QUIT);
+    welcome = loadTexture(gRenderer, WELCOME_PATH);
+    pButton = loadTexture(gRenderer, PLAY_PATH);
+    oButton = loadTexture(gRenderer, OPTIONS_PATH);
+    qButton = loadTexture(gRenderer, QUIT_PATH);
     
     pX = 367; pY = 216;
     oX = 367; oY = 297;

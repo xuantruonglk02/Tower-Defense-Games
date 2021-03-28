@@ -1,11 +1,8 @@
 #include "wave.h"
 
-bool readWaveData(vector <Wave> &wave) {
-    ifstream finp("wave.in");
-    if (finp.fail()) {
-        printf(" -failed to open wave.in\n");
-        return false;
-    }
+void readWaveData(vector <Wave> &wave, bool &quit) {
+    ifstream finp("wave/wave1.in");
+    if (finp.fail()) {printf(" -failed to open wave.in\n"); quit = true; return;}
     int n_wave;
     finp >> n_wave;
     for (int i = 0; i < n_wave; i++) {
@@ -20,5 +17,4 @@ bool readWaveData(vector <Wave> &wave) {
         wave.push_back(re);
     }
     finp.close();
-    return true;
 }

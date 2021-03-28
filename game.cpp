@@ -1,7 +1,7 @@
 #include "game.h"
 
 void Game::drawMap() {
-    SDL_RenderCopy(gRenderer, mapTexture, NULL, NULL);
+    map->drawToRender(gRenderer);
 }
 
 void Game::drawControlBoard() {
@@ -15,7 +15,7 @@ void Game::drawBase() {
 void Game::drawEnemy() {
     for (int i = 0; i < enemys.size(); i++) {
         enemys[i]->drawToRender(gRenderer);
-        enemys[i]->updatePos();
+        enemys[i]->updatePos(map->getDir(), map->getXRoad(), map->getYRoad());
     }
 }
 
@@ -58,15 +58,14 @@ void Game::callEnemy() {
         timeID = SDL_GetTicks();
 
         // add enemy
-        enemys.push_back(new Enemy(gRenderer, 1*50+25 + PLAY_ZONE_Y,wave[curWave].nextEnemy()));
+        enemys.push_back(new Enemy(gRenderer, map->getYFirst()*50+25 + PLAY_ZONE_Y, wave[curWave].nextEnemy()));
         return;
     } else {
         if (SDL_GetTicks() - timeID >= waitTimeCallEnemy) {
-            enemys.push_back(new Enemy(gRenderer, 1*50+25 + PLAY_ZONE_Y,wave[curWave].nextEnemy()));
+            enemys.push_back(new Enemy(gRenderer, map->getYFirst()*50+25 + PLAY_ZONE_Y, wave[curWave].nextEnemy()));
             timeID = SDL_GetTicks();
         }
     }
-
 }
 
 void Game::addGun(double x, double y, int type) {
@@ -168,16 +167,14 @@ void Game::start() {
 
 void Game::setUp() {
     // load background texture
-    mapTexture = loadTexture(gRenderer, MAP);
+    mapTexture = loadTexture(gRenderer, MAP_PATH);
 
     ctb = new ctBoard(gRenderer);
-    base = new Base(gRenderer, 5);
+    map = new Map(gRenderer, quit);
+    base = new Base(gRenderer, map->getYLast());
 
     // read enemy wave data
-    if (!readWaveData(wave)) {
-        quit = true;
-        return;
-    }
+    readWaveData(wave, quit);
 
     curWave = 0;
     callingEnemy = false;
@@ -219,11 +216,15 @@ void Game::play() {
                 mouseDown = true;
                 SDL_GetMouseState(&clickX, &clickY);
             }
+
+            // add gun when release left button
             if (dragging)
                 if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
                     mouseDown = false;
                     dragging = false;
-                    addGun(mouseX, mouseY, ctb->getTypeOfGunChosen());
+                    if (mouseX >= PLAY_ZONE_X + GUN_SIZE/2 && mouseX <= PLAY_ZONE_X + PLAY_ZONE_W - GUN_SIZE/2
+                        && mouseY >= PLAY_ZONE_Y + GUN_SIZE/2 && mouseY <= PLAY_ZONE_Y + PLAY_ZONE_H - GUN_SIZE/2)
+                            addGun(mouseX, mouseY, ctb->getTypeOfGunChosen());
                 }
 
         }
@@ -261,7 +262,11 @@ void Game::endGame() {
 void Game::clearGame() {
     quit = false;
     delete ctb;
+    delete map;
+    delete base;
+    map = NULL;
     ctb = NULL;
+    base = NULL;
     wave.clear();
     guns.clear();
     bullets.clear();

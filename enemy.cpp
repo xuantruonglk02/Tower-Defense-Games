@@ -8,6 +8,7 @@ Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
     speed = E_SPEED[_type];
     damage = E_DAMAGE[_type];
     type = _type;
+    curPos = 0;
 }
 Enemy::~Enemy() {
     SDL_DestroyTexture(eTexture);
@@ -22,8 +23,26 @@ void Enemy::drawToRender(SDL_Renderer* &gRenderer) {
     SDL_RenderCopy(gRenderer, eTexture, NULL, &dstrect);
 }
 
-void Enemy::updatePos() {
-    dstrect.x += speed;
+void Enemy::updatePos(const vector<int> &dir, const vector<int> &xRoad, const vector<int> &yRoad) {
+    if (curPos == xRoad.size()) {dstrect.x += speed; return;}
+    switch (dir[curPos]) {
+        case 0:
+            dstrect.y -= speed;
+            if (abs(dstrect.y + ENEMY_SIZE/2 - yRoad[curPos]*50-25 - PLAY_ZONE_Y) <= speed) {dstrect.y = yRoad[curPos]*50+25 + PLAY_ZONE_Y - ENEMY_SIZE/2; curPos++;}
+            break;
+        case 1:
+            dstrect.x += speed;
+            if (abs(dstrect.x + ENEMY_SIZE/2 - xRoad[curPos]*50-25 - PLAY_ZONE_X) <= speed) {dstrect.x = xRoad[curPos]*50+25 + PLAY_ZONE_X - ENEMY_SIZE/2; curPos++;}
+            break;
+        case 2:
+            dstrect.y += speed;
+            if (abs(dstrect.y + ENEMY_SIZE/2 - yRoad[curPos]*50-25 - PLAY_ZONE_Y) <= speed) {dstrect.y = yRoad[curPos]*50+25 + PLAY_ZONE_Y - ENEMY_SIZE/2; curPos++;}
+            break;
+        case 3:
+            dstrect.x -= speed;
+            if (abs(dstrect.x + ENEMY_SIZE/2 - xRoad[curPos]*50-25 - PLAY_ZONE_X) <= speed) {dstrect.x = xRoad[curPos]*50+25 + PLAY_ZONE_X - ENEMY_SIZE/2; curPos++;}
+            break;
+    }
 }
 
 bool Enemy::isSuccess() {

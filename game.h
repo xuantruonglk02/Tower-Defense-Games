@@ -78,22 +78,20 @@ private:
     // control board
     ctBoard* ctb = NULL;
     // map
+    Map* map = NULL;
     // base
     Base* base = NULL;
 
     // wave
     vector <Wave> wave;
     int curWave;
-
     int waitTimeTransWave = 5000;
     int waitTimeCallEnemy = 700;
 
     // enemy
     vector <Enemy*> enemys;
-
     // gun
     vector <Gun*> guns;
-
     // bullet
     vector <Bullet*> bullets;
 

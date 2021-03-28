@@ -27,4 +27,4 @@ struct Wave {
     }
 };
 
-bool readWaveData(vector <Wave> &wave);
+void readWaveData(vector <Wave> &wave, bool &quit);

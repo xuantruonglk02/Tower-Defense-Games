@@ -18,15 +18,16 @@ const int BULLET_SIZE = 13;
 const int BULLET_SPEED[] = {10};
 
 const std::string WINDOW_TITLE = "An Implementation of Code.org Painter";
-const std::string WELCOME = "assets/welcome.png";
-const std::string PLAY = "assets/play.png";
-const std::string OPTIONS = "assets/options.png";
-const std::string QUIT = "assets/quit.png";
-const std::string PAUSE = "assets/pause.png";
-const std::string MAP = "assets/map.png";
-const std::string CT_BG = "assets/control_bg.png";
-const std::string BASE = "assets/base.png";
-const std::string HP_BAR = "assets/hp_bar.png";
+const std::string WELCOME_PATH = "assets/welcome.png";
+const std::string PLAY_PATH = "assets/play.png";
+const std::string OPTIONS_PATH = "assets/options.png";
+const std::string QUIT_PATH = "assets/quit.png";
+const std::string PAUSE_PATH = "assets/pause.png";
+const std::string MAP_PATH = "assets/map.png";
+const std::string CTBG_PATH = "assets/control_bg.png";
+const std::string BASE_PATH = "assets/base.png";
+const std::string HPBAR_PATH = "assets/hp_bar.png";
+const std::string RIVER_PATH = "assets/river.png";
 const std::string GUN_PATH[6] = {"assets/gun1.png",
                                     "assets/gun2.png",
                                     "assets/gun3.png",
@@ -39,6 +40,6 @@ const std::string ENEMY_PATH[3] = {"assets/enemy1.png",
 const std::string BULLET_PATH = "assets/bullet.png";
 
 const int G_DAMAGE[] = {1, 2, 3, 4, 5, 6};
-const int E_HP[] = {50, 200, 500};
+const int E_HP[] = {100, 300, 700};
 const int E_DAMAGE[] = {10, 20, 30};
 const int E_SPEED[] = {1, 1, 1};

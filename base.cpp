@@ -1,7 +1,7 @@
 #include "base.h"
 
 Base::Base(SDL_Renderer* &gRenderer, int y) {
-    texture = loadTexture(gRenderer, BASE);
+    texture = loadTexture(gRenderer, BASE_PATH);
     dstrect.x = PLAY_ZONE_X + PLAY_ZONE_W - 10;
     dstrect.y = y * 50 + PLAY_ZONE_Y - 10;
     dstrect.h = 70;
