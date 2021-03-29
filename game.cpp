@@ -99,6 +99,7 @@ void Game::treatWhenEnemyGetHit() {
         for (int j = enemys.size()-1; j >= 0; j--) {
             if (enemys[j]->getHit(bullets[i]->getX(), bullets[i]->getY(), bullets[i]->getDamage())) {
                 if (enemys[j]->isDead()) {
+                    ctb->setGem(enemys[j]->getPrize());
                     delete enemys[j];
                     enemys.erase(enemys.begin() + j);
                 }
@@ -183,20 +184,20 @@ void Game::setUp() {
 
 void Game::renderCurrent() {
     drawMap();
-    drawControlBoard();
     drawBase();
-
     noticeWaveCurrent();
-
     drawEnemy();
     drawGun();
     drawBullets();
+    drawControlBoard();
 
     // render if grag a gun for attack
     if (mouseDown) {
         if (ctb->aGunItemChosen(clickX, clickY)) {
-            ctb->drawGunChosen(gRenderer, e.motion.x, e.motion.y);
-            dragging = true;
+            if (G_PRICE[ctb->getTypeOfGunChosen()] <= ctb->getGem()) {
+                ctb->drawGunChosen(gRenderer, e.motion.x, e.motion.y);
+                dragging = true;
+            }
         }
     }
 }
@@ -205,16 +206,19 @@ void Game::play() {
     setUp();
 
     while (!quit) {
+        printf(" %d\n", ctb->getGem());
         // read event
         while (SDL_PollEvent(&e)) {
             // get mouse position
             if (e.motion.x >= 0 && e.motion.x <= SCREEN_WIDTH) mouseX = e.motion.x;
             if (e.motion.y >= 0 && e.motion.y <= SCREEN_HEIGHT) mouseY = e.motion.y;
-            
+
             // get click event
             if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
                 mouseDown = true;
                 SDL_GetMouseState(&clickX, &clickY);
+                ctb->clickEvent(clickX, clickY);
+                
             }
 
             // add gun when release left button
@@ -222,11 +226,11 @@ void Game::play() {
                 if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
                     mouseDown = false;
                     dragging = false;
-                    if (mouseX >= PLAY_ZONE_X + GUN_SIZE/2 && mouseX <= PLAY_ZONE_X + PLAY_ZONE_W - GUN_SIZE/2
-                        && mouseY >= PLAY_ZONE_Y + GUN_SIZE/2 && mouseY <= PLAY_ZONE_Y + PLAY_ZONE_H - GUN_SIZE/2)
-                            addGun(mouseX, mouseY, ctb->getTypeOfGunChosen());
+                    if (mouseX >= PLAY_ZONE_X && mouseX <= PLAY_ZONE_X + PLAY_ZONE_W && mouseY >= PLAY_ZONE_Y && mouseY <= PLAY_ZONE_Y + PLAY_ZONE_H) {
+                        addGun(mouseX, mouseY, ctb->getTypeOfGunChosen());
+                        ctb->setGem(-G_PRICE[ctb->getTypeOfGunChosen()]);
+                    }
                 }
-
         }
 
         if (curWave == wave.size()) break;

@@ -8,6 +8,7 @@ Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
     speed = E_SPEED[_type];
     damage = E_DAMAGE[_type];
     type = _type;
+    prize = E_PRIZE[_type];
     curPos = 0;
 }
 Enemy::~Enemy() {
@@ -18,6 +19,7 @@ Enemy::~Enemy() {
 int Enemy::getX() {return dstrect.x + ENEMY_SIZE/2;}
 int Enemy::getY() {return dstrect.y + ENEMY_SIZE/2;}
 int Enemy::getDam() {return damage;}
+int Enemy::getPrize() {return prize;}
 
 void Enemy::drawToRender(SDL_Renderer* &gRenderer) {
     SDL_RenderCopy(gRenderer, eTexture, NULL, &dstrect);

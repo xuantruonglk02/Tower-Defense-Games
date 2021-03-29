@@ -2,7 +2,7 @@
 
 Map::Map(SDL_Renderer* &gRenderer, bool &quit) {
     mapTexture = loadTexture(gRenderer, MAP_PATH);
-    rvTexture = loadTexture(gRenderer, RIVER_PATH);
+    rvTexture = loadTexture(gRenderer, ROAD_PATH);
 
     readFromFile(quit);
 }

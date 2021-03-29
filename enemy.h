@@ -17,6 +17,7 @@ public:
     int getX();
     int getY();
     int getDam();
+    int getPrize();
 
     void drawToRender(SDL_Renderer* &gRenderer);
 
@@ -35,4 +36,5 @@ private:
     int damage;
     int hp;
     int curPos;
+    int prize;
 };

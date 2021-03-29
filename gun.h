@@ -21,6 +21,8 @@ public:
     void setDamage(int k);
     int getDamage();
 
+    void clickEvent(int x, int y);
+
     bool onShot(double x, double y);
 
 private:
@@ -30,4 +32,5 @@ private:
     int type;
     double range;
     int damage;
+    int price;
 };

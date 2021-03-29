@@ -5,14 +5,14 @@
 const int SCREEN_WIDTH = 950;
 const int SCREEN_HEIGHT = 650;
 
-const int PLAY_ZONE_X = 200;
+const int PLAY_ZONE_X = 150;
 const int PLAY_ZONE_Y = 100;
-const int PLAY_ZONE_W = 700;
+const int PLAY_ZONE_W = 750;
 const int PLAY_ZONE_H = 500;
 
 const int BUTTON_W = 270;
 const int BUTTON_H = 70;
-const int GUN_SIZE = 31;
+const int GUN_SIZE = 40;
 const int ENEMY_SIZE = 31;
 const int BULLET_SIZE = 13;
 const int BULLET_SPEED[] = {10};
@@ -27,7 +27,8 @@ const std::string MAP_PATH = "assets/map.png";
 const std::string CTBG_PATH = "assets/control_bg.png";
 const std::string BASE_PATH = "assets/base.png";
 const std::string HPBAR_PATH = "assets/hp_bar.png";
-const std::string RIVER_PATH = "assets/river.png";
+const std::string LOCK_PATH = "assets/lock.png";
+const std::string ROAD_PATH = "assets/road.png";
 const std::string GUN_PATH[6] = {"assets/gun1.png",
                                     "assets/gun2.png",
                                     "assets/gun3.png",
@@ -43,3 +44,5 @@ const int G_DAMAGE[] = {1, 2, 3, 4, 5, 6};
 const int E_HP[] = {100, 300, 700};
 const int E_DAMAGE[] = {10, 20, 30};
 const int E_SPEED[] = {1, 1, 1};
+const int G_PRICE[] = {2, 4, 6, 8, 10, 12};
+const int E_PRIZE[] = {1, 2, 3, 4, 5, 6};

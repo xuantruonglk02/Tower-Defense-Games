@@ -3,11 +3,13 @@
 Gun::Gun(SDL_Renderer* &gRenderer, double x, double y, int _type) {
     texture = loadTexture(gRenderer, GUN_PATH[_type]);
     type = _type;
-    gX = x; gY = y;
-    dstrect.x = x - GUN_SIZE/2; dstrect.y = y - GUN_SIZE/2;
-    dstrect.h = GUN_SIZE; dstrect.w = GUN_SIZE;
     range = 150;
     damage = G_DAMAGE[_type];
+    price = G_PRICE[_type];
+    gX = (int)(x / 50) * 50 + 25;
+    gY = (int)(y / 50) * 50 + 25;
+    dstrect.x = gX - GUN_SIZE/2; dstrect.y = gY - GUN_SIZE/2;
+    dstrect.h = GUN_SIZE; dstrect.w = GUN_SIZE;
 
 }
 Gun::~Gun() {
@@ -24,6 +26,10 @@ void Gun::drawToRender(SDL_Renderer* &gRenderer) {
 
 void Gun::setDamage(int k) {damage = k;}
 int Gun::getDamage() {return damage;}
+
+void clickEvent(int x, int y) {
+    
+}
 
 bool Gun::onShot(double x, double y) {
     if (sqrt((gX - x)*(gX - x) + (gY - y)*(gY - y)) <= range)
