@@ -14,14 +14,15 @@ Base::~Base() {
     texture = NULL;
 }
 
+void Base::setHP(int eHP) {hp -= eHP;}
+
 void Base::drawToRender(SDL_Renderer* &gRenderer) {
     SDL_RenderCopy(gRenderer, texture, NULL, &dstrect);
 }
 
-void Base::setHP(int eHP) {hp -= eHP;}
 double Base::getHPRate() {return 1.0 * hp / MAXHP;}
 
-bool Base::lose() {
+bool Base::destroyed() {
     if (hp <= 0) return true;
     else return false;
 }

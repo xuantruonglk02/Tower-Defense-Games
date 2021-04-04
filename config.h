@@ -18,31 +18,35 @@ const int BULLET_SIZE = 13;
 const int BULLET_SPEED[] = {10};
 
 const std::string WINDOW_TITLE = "An Implementation of Code.org Painter";
-const std::string WELCOME_PATH = "assets/welcome.png";
-const std::string PLAY_PATH = "assets/play.png";
-const std::string OPTIONS_PATH = "assets/options.png";
-const std::string QUIT_PATH = "assets/quit.png";
-const std::string PAUSE_PATH = "assets/pause.png";
-const std::string MAP_PATH = "assets/map.png";
-const std::string CTBG_PATH = "assets/control_bg.png";
-const std::string BASE_PATH = "assets/base.png";
-const std::string HPBAR_PATH = "assets/hp_bar.png";
-const std::string LOCK_PATH = "assets/lock.png";
-const std::string ROAD_PATH = "assets/road.png";
-const std::string GUN_PATH[6] = {"assets/gun1.png",
-                                    "assets/gun2.png",
-                                    "assets/gun3.png",
-                                    "assets/gun4.png",
-                                    "assets/gun5.png",
-                                    "assets/gun6.png",};
-const std::string ENEMY_PATH[3] = {"assets/enemy1.png",
-                                    "assets/enemy2.png",
-                                    "assets/enemy3.png"};
-const std::string BULLET_PATH = "assets/bullet.png";
+const std::string MENU_PATH = "images/menu.png";
+const std::string O_MENU_PATH = "images/options_menu.png";
+const std::string PLAY_PATH = "images/play.png";
+const std::string OPTIONS_PATH = "images/options.png";
+const std::string QUIT_PATH = "images/quit.png";
+const std::string PAUSE_PATH = "images/pause.png";
+const std::string MAP_PATH = "images/map.png";
+const std::string CTB_PATH = "images/control_board.png";
+const std::string BASE_PATH = "images/base.png";
+const std::string HPBAR_PATH = "images/hp_bar.png";
+const std::string LOCK_PATH = "images/lock.png";
+const std::string ROAD_PATH = "images/road.png";
+const std::string SHOOTING_RANGE_CIRCLE_PATH = "images/circle.png";
+const std::string GUN_PATH[6] = {"images/gun1.png",
+                                    "images/gun2.png",
+                                    "images/gun3.png",
+                                    "images/gun4.png",
+                                    "images/gun5.png",
+                                    "images/gun6.png",};
+const std::string ENEMY_PATH[3] = {"images/enemy1.png",
+                                    "images/enemy2.png",
+                                    "images/enemy3.png"};
+const std::string BULLET_PATH = "images/bullet.png";
 
 const int G_DAMAGE[] = {1, 2, 3, 4, 5, 6};
+const int G_PRICE[] = {2, 4, 6, 8, 10, 12};
+const int G_RANGE[] = {90, 100, 100, 100, 100, 100};
+const int G_SHOT_DELAY_TIME[] = {0, 300, 300, 300, 300, 300};
 const int E_HP[] = {100, 300, 700};
 const int E_DAMAGE[] = {10, 20, 30};
 const int E_SPEED[] = {1, 1, 1};
-const int G_PRICE[] = {2, 4, 6, 8, 10, 12};
 const int E_PRIZE[] = {1, 2, 3, 4, 5, 6};

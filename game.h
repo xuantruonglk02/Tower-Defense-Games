@@ -6,10 +6,12 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #include "config.h"
 #include "utils.h"
 #include "menu.h"
+#include "sound.h"
 #include "control_board.h"
 #include "map.h"
 #include "base.h"
@@ -21,7 +23,6 @@
 using std::vector;
 
 class Game {
-
 public:
     void renderCurrent();
     // copy texture to renderer
@@ -33,6 +34,7 @@ public:
     void drawBullets();
     void noticeWaveCurrent();
 
+    // delay time for 
     void waitingForNextWave();
 
     // call enemy
@@ -40,14 +42,13 @@ public:
     // add bullet to list
     void addGun(double x, double y, int type);
     // fire
+    void freeFire();
+    // fire
     void addBullet(double gX, double gY, double eX, double eY, int dmg);
 
-    // fire
-    void freeFire();
 
-    //
-    void treatWhenEnemyGetHit();
     // remove
+    void treatWhenEnemyGetHit();
     void remoteEnemyDied();
     void removeBulletOutScreen();
     void removeEnemyFinished();
@@ -58,7 +59,7 @@ public:
     void setUp();
     // play game
     void play();
-    // loser screen
+    // 
     void endGame();
     // delete game playing
     void clearGame();
@@ -68,13 +69,11 @@ public:
 private:
     SDL_Window* gWindow = NULL;
     SDL_Renderer* gRenderer = NULL;
-    
-    // map texture
-    SDL_Texture* mapTexture = NULL;
 
     // menu
     Menu* menu = NULL;
-
+    // sound
+    Sound* sound = NULL;
     // control board
     ctBoard* ctb = NULL;
     // map
@@ -85,23 +84,27 @@ private:
     // wave
     vector <Wave> wave;
     int curWave;
-    int waitTimeTransWave = 5000;
-    int waitTimeCallEnemy = 700;
+    int waitTimeTransWave;
+    int waitTimeCallEnemy;
 
     // enemy
     vector <Enemy*> enemys;
+
     // gun
-    vector <Gun*> guns;
+    Gun* gunObject[150];
+    
     // bullet
     vector <Bullet*> bullets;
 
     SDL_Event e;
-
     Uint32 timeID;
-
+    int mapOfObject[150];
     double mouseX, mouseY;
     int clickX, clickY;
+    int row, col;
     bool mouseDown, dragging;
     bool callingEnemy;
+    bool win;
+    bool pause;
     bool quit;
 };

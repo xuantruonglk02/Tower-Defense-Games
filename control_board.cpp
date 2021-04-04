@@ -1,7 +1,7 @@
 #include "control_board.h"
 
 ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
-    cTexture = loadTexture(gRenderer, CTBG_PATH);
+    cTexture = loadTexture(gRenderer, CTB_PATH);
     pTexture = loadTexture(gRenderer, PAUSE_PATH);
     lTexture = loadTexture(gRenderer, LOCK_PATH);
     hpbTexture = loadTexture(gRenderer, HPBAR_PATH);
@@ -9,6 +9,7 @@ ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
         gunTextures[i] = loadTexture(gRenderer, GUN_PATH[i]);
     }
 
+    // set up position of 6 guns on control board
     gunItemXPos[0] = 30; gunItemYPos[0] = 210;
     gunItemXPos[1] = 80; gunItemYPos[1] = 210;
     gunItemXPos[2] = 30; gunItemYPos[2] = 260;
@@ -16,6 +17,7 @@ ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
     gunItemXPos[4] = 30; gunItemYPos[4] = 310;
     gunItemXPos[5] = 80; gunItemYPos[5] = 310;
 
+    // the first money
     gem = 2;
 }
 ctBoard::~ctBoard() {
@@ -32,15 +34,15 @@ ctBoard::~ctBoard() {
 }
 
 void ctBoard::drawToRender(SDL_Renderer* &gRenderer, double rate) {
-    //
+    // draw control board background
     SDL_RenderCopy(gRenderer, cTexture, NULL, NULL);
-    // pause button
+    // draw pause button
     dstrect.h = 50; dstrect.w = 50;
     dstrect.x = 890; dstrect.y = 10;
     SDL_RenderCopy(gRenderer, pTexture, NULL, &dstrect);
-    // hp bar
+    // draw hp bar
     drawHPBar(gRenderer, rate);
-    // 6 guns
+    // draw 6 guns
     drawGuns(gRenderer);
 }
 
@@ -51,11 +53,11 @@ void ctBoard::drawHPBar(SDL_Renderer* &gRenderer, double rate) {
 }
 
 void ctBoard::drawGuns(SDL_Renderer* &gRenderer) {
-    // draw 6 guns
     dstrect.h = GUN_SIZE; dstrect.w = GUN_SIZE;
     for (int i = 0; i < 6; i++) {
         dstrect.x = gunItemXPos[i]; dstrect.y = gunItemYPos[i];
         SDL_RenderCopy(gRenderer, gunTextures[i], NULL, &dstrect);
+        // draw lock if money is not enough to buy gun
         if (G_PRICE[i] > gem) drawLocks(gRenderer, i);
     }
 }
@@ -68,18 +70,24 @@ void ctBoard::drawLocks(SDL_Renderer* &gRenderer, int i) {
     SDL_RenderCopy(gRenderer, lTexture, NULL, &r);
 }
 
+void ctBoard::drawGunChosen(SDL_Renderer* &gRenderer, double x, double y) {
+    SDL_Rect r;
+    r.h = GUN_SIZE; r.w = GUN_SIZE;
+    r.x = x - GUN_SIZE/2; r.y = y - GUN_SIZE/2;
+    SDL_RenderCopy(gRenderer, gunTextures[gunItemChosen], NULL, &r);
+}
+
 void ctBoard::setGem(int k) {if (gem + k >= 0) gem += k;}
 int ctBoard::getGem() {return gem;}
 
-void ctBoard::clickEvent(int x, int y) {
-    // click pause button
+bool ctBoard::clickPauseButton(int x, int y) {
     if (x >= 890 && x <= 940 && y >= 10 && y <= 60) {
-        pause();
-        return;
+        return true;
     }
+    else return false;
 }
 
-bool ctBoard::aGunItemChosen(int x, int y) {
+bool ctBoard::aGunItemIsChosen(int x, int y) {
     for (int i = 0; i < 6; i++) {
         if (x >= gunItemXPos[i] && x <= gunItemXPos[i] + GUN_SIZE && y >= gunItemYPos[i] && y <= gunItemYPos[i] + GUN_SIZE) {
             gunItemChosen = i;
@@ -91,13 +99,4 @@ bool ctBoard::aGunItemChosen(int x, int y) {
 
 int ctBoard::getTypeOfGunChosen() {return gunItemChosen;}
 
-void ctBoard::drawGunChosen(SDL_Renderer* &gRenderer, double x, double y) {
-    SDL_Rect r;
-    r.h = GUN_SIZE; r.w = GUN_SIZE;
-    r.x = x - GUN_SIZE/2; r.y = y - GUN_SIZE/2;
-    SDL_RenderCopy(gRenderer, gunTextures[gunItemChosen], NULL, &r);
-}
 
-void ctBoard::pause() {
-    printf(" p\n");
-}

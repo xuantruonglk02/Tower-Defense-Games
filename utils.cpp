@@ -35,7 +35,42 @@ void logSDLError(const std::string &msg, bool fatal) {
     }
 }
 
-SDL_Texture* loadTexture(SDL_Renderer* &renderer, std::string path) {
+void waitUntilKeyPressed() {
+    SDL_Event e;
+    while (true) {
+        if ( SDL_WaitEvent(&e) != 0 && (e.type == SDL_KEYDOWN || e.type == SDL_QUIT) )
+            return;
+        SDL_Delay(100);
+    }
+}
+
+void treatPosition(double x, double y, int &row, int &col) {
+    if (y < PLAY_ZONE_Y || y > PLAY_ZONE_Y + PLAY_ZONE_H) row = -1;
+        else row = (int)(y - PLAY_ZONE_Y) / 50;
+    if (x < PLAY_ZONE_X || x > PLAY_ZONE_X + PLAY_ZONE_W) col = -1;
+        else col = (int)(x - PLAY_ZONE_X) / 50;
+}
+
+// void loadTexture(SDL_Renderer* &gRenderer) {
+//     menuTexture = loadTexture(gRenderer, MENU_PATH);
+//     pButtonbTexture = loadTexture(gRenderer, PLAY_PATH);
+//     oButtonTexture = loadTexture(gRenderer, OPTIONS_PATH);
+//     qButtonTexture = loadTexture(gRenderer, QUIT_PATH);
+//     mapTexture = loadTexture(gRenderer, MAP_PATH);
+//     roadTexture = loadTexture(gRenderer, ROAD_PATH);
+//     cbtTexture = loadTexture(gRenderer, CTB_PATH);
+//     bulletTexture = loadTexture(gRenderer, BULLET_PATH);
+//     pauseTexture = loadTexture(gRenderer, PAUSE_PATH);
+//     srCircleTexture = loadTexture(gRenderer, SHOOTING_RANGE_CIRCLE_PATH);
+    
+//     for (int i = 0; i < 6; i++)
+//         gunTexture[i] = loadTexture(gRenderer, GUN_PATH[i]);
+//     for (int i = 0; i < 3; i++)
+//         enemyTexture[i] = loadTexture(gRenderer, ENEMY_PATH[i]);
+// }
+
+
+SDL_Texture* loadTexture(SDL_Renderer* &gRenderer, std::string path) {
     //The final texture
     SDL_Texture* newTexture = NULL;
 
@@ -48,7 +83,7 @@ SDL_Texture* loadTexture(SDL_Renderer* &renderer, std::string path) {
     else
     {
         //Create texture from surface pixels
-        newTexture = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
         if( newTexture == NULL )
         {
             printf( "Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
@@ -59,13 +94,4 @@ SDL_Texture* loadTexture(SDL_Renderer* &renderer, std::string path) {
     }
 
     return newTexture;
-}
-
-void waitUntilKeyPressed() {
-    SDL_Event e;
-    while (true) {
-        if ( SDL_WaitEvent(&e) != 0 && (e.type == SDL_KEYDOWN || e.type == SDL_QUIT) )
-            return;
-        SDL_Delay(100);
-    }
 }

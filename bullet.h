@@ -12,25 +12,27 @@ public:
     Bullet(SDL_Renderer* &gRenderer, double fX, double fY, double bX, double bY, double d, int _damage);
     ~Bullet();
 
+    // set position
+    void setFirstX(double x);
+    void setFirstY(double y);
+    void setX(double x);
+    void setY(double y);
+    // distance from first position to current position
+    void setDistance(double d);
+    // update position
+    void updatePos(int k);
+
+    void drawToRender(SDL_Renderer* &gRenderer);
+
     double getFirstX();
     double getFirstY();
     double getX();
     double getY();
     double getDistance();
 
-    void setFirstX(double x);
-    void setFirstY(double y);
-    void setX(double x);
-    void setY(double y);
-    void setDistance(double d);
-
-    void drawToRender(SDL_Renderer* &gRenderer);
-
-    void updatePos(int k);
+    int getDamage();
 
     bool outOfScreen();
-
-    int getDamage();
 
 private:
 
