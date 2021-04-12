@@ -46,6 +46,8 @@ public:
     // fire
     void addBullet(double gX, double gY, double eX, double eY, int dmg);
 
+    //
+    void resetGunUpdateDisplay(Gun* const &pGun);
 
     // remove
     void treatWhenEnemyGetHit();
@@ -59,7 +61,7 @@ public:
     void setUp();
     // play game
     void play();
-    // 
+    // end game
     void endGame();
     // delete game playing
     void clearGame();
@@ -91,6 +93,7 @@ private:
     vector <Enemy*> enemys;
 
     // gun
+    vector<Gun*> guns;
     Gun* gunObject[150];
     
     // bullet
@@ -102,6 +105,8 @@ private:
     double mouseX, mouseY;
     int clickX, clickY;
     int row, col;
+    int indexOfGunObject;
+    bool readyForUpdate;
     bool mouseDown, dragging;
     bool callingEnemy;
     bool win;

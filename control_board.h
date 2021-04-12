@@ -19,12 +19,16 @@ public:
     // draw the gun which is dragged to the map
     void drawGunChosen(SDL_Renderer* &gRenderer, double x, double y);
 
+    void pauseMenu();
+
     void setGem(int k);
     int getGem();
 
     bool clickPauseButton(int x, int y);
     bool aGunItemIsChosen(int x, int y);
     int getTypeOfGunChosen();
+
+    Uint32 getTimePause();
 
 
 private:
@@ -45,4 +49,7 @@ private:
     int gunItemChosen;
     // money
     int gem;
+
+    bool pause_ing;
+    Uint32 startPause, timePause;
 };

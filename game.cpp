@@ -68,6 +68,7 @@ void Game::callEnemy() {
 void Game::addGun(double x, double y, int type) {
     treatPosition(x, y, row, col);
     gunObject[row * 15 + col] = new Gun(gRenderer, x, y, type);
+    guns.push_back(gunObject[row * 15 + col]);
 }
 
 void Game::addBullet(double gX, double gY, double eX, double eY, int dmg) {
@@ -94,6 +95,11 @@ void Game::freeFire() {
             }
         }
     }
+}
+
+void Game::resetGunUpdateDisplay(Gun* const &pGun) {
+    for (int i = 0; i < guns.size(); i++)
+        if (guns[i] != pGun) guns[i]->unShowUpdate();
 }
 
 void Game::treatWhenEnemyGetHit() {
@@ -204,9 +210,9 @@ void Game::renderCurrent() {
     drawBase();
     noticeWaveCurrent();
     drawEnemy();
-    drawGun();
     drawBullets();
     drawControlBoard();
+    drawGun();
 
     // render if grag a gun for attack
     if (mouseDown && ctb->aGunItemIsChosen(clickX, clickY)) {
@@ -223,6 +229,13 @@ void Game::play() {
     while (!quit) {
         // read event
         while (SDL_PollEvent(&e)) {
+            // get quit event
+            if (e.type == SDL_QUIT) {
+                quit = true;
+                clearGame();
+                return;
+            }
+            
             // get mouse position
             if (e.motion.x >= 0 && e.motion.x <= SCREEN_WIDTH) mouseX = e.motion.x;
             if (e.motion.y >= 0 && e.motion.y <= SCREEN_HEIGHT) mouseY = e.motion.y;
@@ -233,11 +246,30 @@ void Game::play() {
                 SDL_GetMouseState(&clickX, &clickY);
                 // when click on control board
                 if (ctb->clickPauseButton(clickX, clickY))
-                    if (pause) pause = false;
-                    else pause = true;
+                    if (!pause) pause = true;
+                    else {
+                        pause = false;
+                        timeID += ctb->getTimePause();
+                    }
                 // when click on a gun on screen
                 treatPosition(clickX, clickY, row, col);
-                if (row > -1 && col > -1 && gunObject[row * 15 + col] != nullptr) gunObject[row * 15 + col]->clickOn();
+                if (row > -1 && col > -1) {
+                    if (gunObject[row * 15 + col] != nullptr) {
+                        resetGunUpdateDisplay(gunObject[row * 15 + col]);
+                        if (gunObject[row * 15 + col]->clickOn()) {
+                            readyForUpdate = true;
+                            indexOfGunObject = row * 15 + col;
+                        } else {
+                            readyForUpdate = false;
+                        }
+                    } else {
+                        resetGunUpdateDisplay(NULL);
+                    }
+                }
+                // when click on inc button of gun
+                if (readyForUpdate)
+                    // update and decrease gem
+                    ctb->setGem(-(gunObject[indexOfGunObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
             }
             // add gun when release left button
             if (dragging)
@@ -290,11 +322,33 @@ void Game::play() {
 
 void Game::endGame() {
     clearGame();
-    if (win) printf(" win\n");
-        else printf(" lose\n");
+
+    SDL_Texture* endScreenTexture = NULL;
+    if (win) endScreenTexture = loadTexture(gRenderer, "images/win.png");
+        else endScreenTexture = loadTexture(gRenderer, "images/lose.png");
+
+    SDL_Rect r;
+    r.h = 200; r.w = 400;
+    r.x = SCREEN_WIDTH/2 - 200;
+    r.y = SCREEN_HEIGHT/2 - 100;
+
+    SDL_RenderCopy(gRenderer, endScreenTexture, NULL, &r);
+    SDL_RenderPresent(gRenderer);
+
+    waitUntilKeyPressed();
+
+    SDL_DestroyTexture(endScreenTexture);
+    endScreenTexture = NULL;
 }
 
 void Game::clearGame() {
+    quit = false;
+    readyForUpdate = false;
+    mouseDown = false;
+    dragging = false;
+    callingEnemy = false;
+    win = false;
+    pause = false;
     quit = false;
     delete ctb;
     delete map;
@@ -309,10 +363,10 @@ void Game::clearGame() {
         delete gunObject[i];
         gunObject[i] = NULL;
     }
+    guns.clear();
 }
 
 void Game::quitGame() {
-    //clearGame();
     delete sound;
     delete menu;
     sound = NULL;

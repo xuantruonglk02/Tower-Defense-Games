@@ -19,6 +19,8 @@ ctBoard::ctBoard(SDL_Renderer* &gRenderer) {
 
     // the first money
     gem = 2;
+
+    pause_ing = false;
 }
 ctBoard::~ctBoard() {
     SDL_DestroyTexture(cTexture);
@@ -77,11 +79,23 @@ void ctBoard::drawGunChosen(SDL_Renderer* &gRenderer, double x, double y) {
     SDL_RenderCopy(gRenderer, gunTextures[gunItemChosen], NULL, &r);
 }
 
+void ctBoard::pauseMenu() {
+
+}
+
 void ctBoard::setGem(int k) {if (gem + k >= 0) gem += k;}
 int ctBoard::getGem() {return gem;}
 
 bool ctBoard::clickPauseButton(int x, int y) {
     if (x >= 890 && x <= 940 && y >= 10 && y <= 60) {
+        if (!pause_ing) {
+            pause_ing = true;
+            startPause = SDL_GetTicks();
+        } else {
+            pause_ing = false;
+            timePause = SDL_GetTicks() - startPause;
+        }
+        pauseMenu();
         return true;
     }
     else return false;
@@ -99,4 +113,4 @@ bool ctBoard::aGunItemIsChosen(int x, int y) {
 
 int ctBoard::getTypeOfGunChosen() {return gunItemChosen;}
 
-
+Uint32 ctBoard::getTimePause() {return timePause;}
