@@ -3,9 +3,15 @@
 Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
     // load enemy texture
     eTexture = loadTexture(gRenderer, ENEMY_PATH[_type]);
-    // 
-    dstrect.h = ENEMY_SIZE; dstrect.w = ENEMY_SIZE;
-    dstrect.x = -ENEMY_SIZE/2; dstrect.y = y - ENEMY_SIZE/2;
+    //
+    dstrect_e.h = ENEMY_SIZE; dstrect_e.w = ENEMY_SIZE;
+    dstrect_e.x = -ENEMY_SIZE/2; dstrect_e.y = y - ENEMY_SIZE/2;
+
+    eX = 0; eY = y;
+
+    // hp bar
+    hpTexture = loadTexture(gRenderer, HPBAR_PATH);
+    dstrect_hp = {dstrect_e.x, dstrect_e.y - 10, dstrect_e.w, 5};
 
     // use the first value array
     type = _type;
@@ -13,6 +19,7 @@ Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
     speed = E_SPEED[_type];
     damage = E_DAMAGE[_type];
     prize = E_PRIZE[_type];
+
     // first position on road
     curPos = 0;
 }
@@ -22,46 +29,80 @@ Enemy::~Enemy() {
 }
 
 void Enemy::updatePos(const vector<int> &dir, const vector<int> &xRoad, const vector<int> &yRoad) {
-    if (curPos == xRoad.size()) {dstrect.x += speed; return;}
+    if (SDL_GetTicks() - effectTimeID >= 3000) speed = E_SPEED[type];
+
+    if (curPos == xRoad.size()) {eX += speed; return;}
     switch (dir[curPos]) {
         case 0:
-            dstrect.y -= speed;
-            if (abs(dstrect.y + ENEMY_SIZE/2 - yRoad[curPos]*50-25 - PLAY_ZONE_Y) <= speed) {dstrect.y = yRoad[curPos]*50+25 + PLAY_ZONE_Y - ENEMY_SIZE/2; curPos++;}
+            eY -= speed;
+            if (abs(eY - yRoad[curPos]*50-25 - PLAY_ZONE_Y) <= speed) {eY = yRoad[curPos]*50+25 + PLAY_ZONE_Y; curPos++;}
             break;
         case 1:
-            dstrect.x += speed;
-            if (abs(dstrect.x + ENEMY_SIZE/2 - xRoad[curPos]*50-25 - PLAY_ZONE_X) <= speed) {dstrect.x = xRoad[curPos]*50+25 + PLAY_ZONE_X - ENEMY_SIZE/2; curPos++;}
+            eX += speed;
+            if (abs(eX - xRoad[curPos]*50-25 - PLAY_ZONE_X) <= speed) {eX = xRoad[curPos]*50+25 + PLAY_ZONE_X; curPos++;}
             break;
         case 2:
-            dstrect.y += speed;
-            if (abs(dstrect.y + ENEMY_SIZE/2 - yRoad[curPos]*50-25 - PLAY_ZONE_Y) <= speed) {dstrect.y = yRoad[curPos]*50+25 + PLAY_ZONE_Y - ENEMY_SIZE/2; curPos++;}
+            eY += speed;
+            if (abs(eY - yRoad[curPos]*50-25 - PLAY_ZONE_Y) <= speed) {eY = yRoad[curPos]*50+25 + PLAY_ZONE_Y; curPos++;}
             break;
         case 3:
-            dstrect.x -= speed;
-            if (abs(dstrect.x + ENEMY_SIZE/2 - xRoad[curPos]*50-25 - PLAY_ZONE_X) <= speed) {dstrect.x = xRoad[curPos]*50+25 + PLAY_ZONE_X - ENEMY_SIZE/2; curPos++;}
+            eX -= speed;
+            if (abs(eX - xRoad[curPos]*50-25 - PLAY_ZONE_X) <= speed) {eX = xRoad[curPos]*50+25 + PLAY_ZONE_X; curPos++;}
             break;
     }
 }
 
 void Enemy::drawToRender(SDL_Renderer* &gRenderer) {
-    SDL_RenderCopy(gRenderer, eTexture, NULL, &dstrect);
+    dstrect_e.x = eX - ENEMY_SIZE/2;
+    dstrect_e.y = eY - ENEMY_SIZE/2;
+    SDL_RenderCopy(gRenderer, eTexture, NULL, &dstrect_e);
+
+    dstrect_hp.x = dstrect_e.x;
+    dstrect_hp.y = dstrect_e.y - dstrect_hp.h - 5;
+    SDL_RenderCopy(gRenderer, hpTexture, NULL, &dstrect_hp);
 }
 
-int Enemy::getX() {return dstrect.x + ENEMY_SIZE/2;}
-int Enemy::getY() {return dstrect.y + ENEMY_SIZE/2;}
+int Enemy::getX() {return eX;}
+int Enemy::getY() {return eY;}
 int Enemy::getDam() {return damage;}
 int Enemy::getPrize() {return prize;}
 
-bool Enemy::getHit(double bX, double bY, int damamge) {
-    if (sqrt((dstrect.x + ENEMY_SIZE/2 - bX)*(dstrect.x + ENEMY_SIZE/2 - bX) + (dstrect.y + ENEMY_SIZE/2 - bY)*(dstrect.y + ENEMY_SIZE/2 - bY)) <= ENEMY_SIZE/2 + BULLET_SIZE/2) {
-        hp -= damamge;
-        return true;
+bool Enemy::getHit(double bX, double bY, int damamge, int bType) {
+    int range;
+    if (bType < 2) range = ENEMY_SIZE/2 + BULLET_SIZE/2;
+    else if (bType == 2) range = ENEMY_SIZE/2;
+    else range = ENEMY_SIZE/2 + ROCKET_H[1]/2;
+
+    if (sqrt((eX - bX)*(eX - bX) + (eY - bY)*(eY - bY)) > range)
+        return false;
+
+    if (bType == 2) {
+        effectTimeID = SDL_GetTicks();
+        speed = E_SPEED[type] / 2;
     }
-    return false;
+
+    hp -= damamge;
+    updateHPBar();
+
+    return true;
+}
+
+void Enemy::getBoom(double bX, double bY, int damamge) {
+    if (sqrt((eX - bX)*(eX - bX) + (eY - bY)*(eY - bY)) <= BOOM_RANGE) {
+        hp -= damage;
+        updateHPBar();
+        printf(" get %d damage\n", damage);
+    }
+}
+
+void Enemy::updateHPBar() {
+    double r = hp * 1.0 / E_HP[type];
+    dstrect_hp.w = (int)(dstrect_e.w * r);
+    dstrect_hp.x = dstrect_e.x + (dstrect_e.w - dstrect_hp.w) / 2;
 }
 
 bool Enemy::isSuccess() {
-    if (dstrect.x >= PLAY_ZONE_X + PLAY_ZONE_W) {
+    if (dstrect_e.x >= PLAY_ZONE_X + PLAY_ZONE_W) {
         return true;
     }
     return false;

@@ -38,7 +38,6 @@ void Menu::drawMenu(SDL_Renderer* &gRenderer) {
 }
 
 void Menu::optionsMenu(SDL_Renderer* &gRenderer, Sound* &sound) {
-    printf("option\n");
     SDL_Event e;
     // loop
     while (true) {
@@ -51,18 +50,15 @@ void Menu::optionsMenu(SDL_Renderer* &gRenderer, Sound* &sound) {
 
                 // click on background music button
                 if (sqrt((clickX - 425)*(clickX - 425) + (clickY - 325)*(clickY - 325)) <= 30) {
-                    printf(" music\n");
                     sound->musicInOptions();
                 }
 
                 // click on sound effect button
                 else if (sqrt((clickX - 525)*(clickX - 525) + (clickY - 325)*(clickY - 325)) <= 30) {
-                    printf(" sound effect\n");
                     sound->soundEffectInOptions();
                 }
                 // click on back button
                 else if (clickX < 325 || clickX > 625 || clickY < 225 || clickY > 425) {
-                    printf(" back\n");
                     return;
                 }
             }

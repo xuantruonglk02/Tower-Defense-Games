@@ -1,47 +1,60 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include "config.h"
 #include "utils.h"
+#include "enemy.h"
 
 class Bullet {
 public:
-    Bullet(SDL_Renderer* &gRenderer, double fX, double fY, double bX, double bY, double d, int _damage);
+    Bullet(SDL_Renderer* &gRenderer, double gX, double gY, Enemy* &_enemy, int _damage, int _type);
     ~Bullet();
 
-    // set position
-    void setFirstX(double x);
-    void setFirstY(double y);
-    void setX(double x);
-    void setY(double y);
-    // distance from first position to current position
-    void setDistance(double d);
-    // update position
+    void updateEnemyPosition();
+    void updateDegree();
     void updatePos(int k);
+    void setDstRect();
 
     void drawToRender(SDL_Renderer* &gRenderer);
 
-    double getFirstX();
-    double getFirstY();
+    int getType();
+
     double getX();
     double getY();
-    double getDistance();
+    double getLastX();
+    double getLastY();
 
     int getDamage();
 
+    void setTarget(Enemy* enemy);
+    Enemy* getTarget();
+
+    void targetKilled();
+
     bool outOfScreen();
+    bool hitTheTarget();
 
 private:
 
     SDL_Texture* bTexture = NULL;
 
+    SDL_Point centerPoint;
+
+    SDL_Rect dstrect;
+
+    Enemy* target = NULL;
+
     double firstX, firstY;
+    double lastX, lastY;
     double bulletX, bulletY;
-    double dis;
+    double disToLast;
 
+    int type;
     int damage;
-
+    double degree;
+    bool success;
 };

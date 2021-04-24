@@ -15,6 +15,12 @@ public:
     ~Gun();
 
     void drawToRender(SDL_Renderer* &gRenderer);
+    void drawRangeCircle(SDL_Renderer* &gRenderer);
+    void drawUpdateBoard(SDL_Renderer* &gRenderer);
+
+    void changeShotDirection(int enemyX, int enemyY);
+
+    int getType();
 
     // show the range shooting circle when click on
     // show update board
@@ -29,22 +35,25 @@ public:
     void setDamage(int k);
     int getDamage();
 
+    void setBuff(int typeOfSupporter, int buff);
+
     // delay fire
     void setTimeID();
     Uint32 getTimeID();
     int getShotDelayTime();
 
-    //
-    void unShowUpdate();
+    void unenableUpdate();
 
-    double getX();
-    double getY();
+    int getX();
+    int getY();
 
+    void fire();
 
     // check a enemy in range shooting
     bool onShot(double x, double y);
 
 private:
+
     const int UPDATE_BOARD_HEIGHT = 214;
     const int UPDATE_BOARD_WIDTH = 124;
     const int UPDATE_BOARD_BORDER = 5;
@@ -58,8 +67,14 @@ private:
     // 68
 
     // gun
-    SDL_Texture* gTexture = NULL;
-    SDL_Rect dstrect_g;
+    SDL_Texture* gTexture[2];
+    SDL_Rect dstrect_g[2];
+    // gun base
+    SDL_Texture* bsTexture = NULL;
+    SDL_Rect dstrect_bs;
+    // rocket not fire
+    SDL_Texture* rkTexture = NULL;
+    SDL_Rect dstrest_rk;
     // range shooting circle
     SDL_Texture* cTexture = NULL;
     SDL_Rect dstrect_c;
@@ -76,11 +91,17 @@ private:
     SDL_Texture* bTexture = NULL;
     SDL_Rect dstrect_b[3];
 
+    SDL_Point centerPoint_g[2];
+    SDL_Point centerPoint_rk;
+
+    double degree;
+
     // position of gun
-    double gX, gY;
+    int gX, gY;
 
     // type of gun
     int type;
+
     // damage
     int damage, d_lever;
     // speed
@@ -88,8 +109,12 @@ private:
     int shotDelayTime, s_lever;
     // range shooting
     int range, r_lever;
+
     // price of the gun
     int price;
+
+    int frame;
+
     // true when click on the gun
     bool showUpdate;
 };

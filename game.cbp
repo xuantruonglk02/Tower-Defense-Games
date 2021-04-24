@@ -51,10 +51,14 @@
 		<Unit filename="menu.h" />
 		<Unit filename="sound.cpp" />
 		<Unit filename="sound.h" />
+		<Unit filename="supporter.cpp" />
+		<Unit filename="supporter.h" />
 		<Unit filename="utils.cpp" />
 		<Unit filename="utils.h" />
 		<Unit filename="wave.cpp" />
 		<Unit filename="wave.h" />
+		<Unit filename="writer.cpp" />
+		<Unit filename="writer.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

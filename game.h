@@ -18,6 +18,7 @@
 #include "wave.h"
 #include "enemy.h"
 #include "gun.h"
+#include "supporter.h"
 #include "bullet.h"
 
 using std::vector;
@@ -31,7 +32,10 @@ public:
     void drawBase();
     void drawEnemy();
     void drawGun();
+    void drawSupporter();
+    void drawRange();
     void drawBullets();
+    void drawUpdateBoard();
     void noticeWaveCurrent();
 
     // delay time for 
@@ -39,18 +43,21 @@ public:
 
     // call enemy
     void callEnemy();
-    // add bullet to list
-    void addGun(double x, double y, int type);
-    // fire
+
     void freeFire();
-    // fire
-    void addBullet(double gX, double gY, double eX, double eY, int dmg);
+
+    void addGun(double x, double y, int type);
+    void addSupporter(double x, double y, int type);
+    void addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type);
+
+    void buffForGun(Supporter* pSupporter);
 
     //
-    void resetGunUpdateDisplay(Gun* const &pGun);
+    void resetUpdateDisplay(Gun* pGun, Supporter* pSupporter);
 
     // remove
     void treatWhenEnemyGetHit();
+    void treatWhenRocketBoom(Bullet* rocket);
     void remoteEnemyDied();
     void removeBulletOutScreen();
     void removeEnemyFinished();
@@ -95,6 +102,9 @@ private:
     // gun
     vector<Gun*> guns;
     Gun* gunObject[150];
+
+    vector<Supporter*> supporters;
+    Supporter* supporterObject[150];
     
     // bullet
     vector <Bullet*> bullets;
@@ -107,7 +117,7 @@ private:
     int row, col;
     int indexOfGunObject;
     bool readyForUpdate;
-    bool mouseDown, dragging;
+    bool dragging;
     bool callingEnemy;
     bool win;
     bool pause;

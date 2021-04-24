@@ -6,6 +6,7 @@ Sound::Sound() {
     }
 
     loadMedia();
+    
     soundEffectOff = false;
 }
 Sound::~Sound() {
@@ -36,13 +37,11 @@ void Sound::loadMedia() {
 
 void Sound::playMusic() {
     Mix_PlayMusic(background_music, -1);
-    printf(" play music\n");
 }
 
 void Sound::playEffectSoundWhenGetHurt() {
     if (soundEffectOff) return;
     Mix_PlayChannel(-1, getHurtEffectSound, 0);
-    printf(" oi doi oi\n");
 }
 
 void Sound::musicInOptions() {

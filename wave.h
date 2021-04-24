@@ -16,15 +16,8 @@ struct Wave {
     vector <int> enemyType;
     vector <int> amountOfEnemy;
 
-    int nextEnemy() {
-        if (typeCalling == amountOfType-1
-            && amountOfEnemy[typeCalling] == 1) nextWave = true;
-        if (amountOfEnemy[typeCalling] == 0) {
-            typeCalling++;
-        }
-        amountOfEnemy[typeCalling]--;
-        return typeCalling;
-    }
+    int nextEnemy();
+        
 };
 
 void readWaveData(vector <Wave> &wave, bool &quit);

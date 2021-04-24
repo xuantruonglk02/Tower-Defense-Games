@@ -30,17 +30,28 @@ public:
     int getPrize();
 
     // check enemy is shotted
-    bool getHit(double bX, double bY, int damamge);
+    bool getHit(double bX, double bY, int damamge, int bType);
+    // check enemy get hit by roket boom
+    void getBoom(double bX, double bY, int damamge);
+
+    void updateHPBar();
 
     // check enemy go to the base
     bool isSuccess();
     // check hp enemy less than 0
     bool isDead();
 
+
 private:
     // enemy texture
     SDL_Texture* eTexture;
-    SDL_Rect dstrect;
+    // enemy hp bar texture
+    SDL_Texture* hpTexture;
+
+    SDL_Rect dstrect_e;
+    SDL_Rect dstrect_hp;
+
+    Uint32 effectTimeID;
 
     // type of enemy
     int type;
@@ -48,7 +59,9 @@ private:
     // current position of enemy on road
     int curPos;
 
-    int speed;
+    double speed;
+    double eX, eY;
+
     int damage;
     int hp;
     // the money player can get after kill the enemy
