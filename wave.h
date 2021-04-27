@@ -11,7 +11,7 @@ struct Wave {
     bool started = false;
     bool timeStarted = false;
     bool nextWave = false;
-    int typeCalling = 0;
+    int typeCalling = 0, called = 0;
     int amountOfType;
     vector <int> enemyType;
     vector <int> amountOfEnemy;

@@ -8,20 +8,22 @@
 
 #include "config.h"
 #include "utils.h"
+#include "texture.h"
+#include "enemy.h"
 
 using std::vector;
 using std::ifstream;
 
 class Map {
 public:
-    Map(SDL_Renderer* &gRenderer);
+    Map();
     ~Map();
 
     // read map data
     void readFromFile(bool &quit);
 
     // draw the map
-    void drawToRender(SDL_Renderer* &gRenderer);
+    void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
 
     // build the map of road on two-dimensional array
     void buildMapOfObject(int* mapOfObject);
@@ -35,12 +37,10 @@ public:
     int getYFirst();
     // where the enemy finish
     int getYLast();
+    // get direction
+    int getDir(int pos);
 
 private:
-    // map texture
-    SDL_Texture* mapTexture = NULL;
-    // road texture
-    SDL_Texture* roadTexture = NULL;
 
     SDL_Rect dstrect;
 

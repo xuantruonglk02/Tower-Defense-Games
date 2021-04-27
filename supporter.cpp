@@ -1,44 +1,47 @@
 #include "supporter.h"
 
-Supporter::Supporter(SDL_Renderer* &gRenderer, int x, int y, int _type) {
-    sTexture = loadTexture(gRenderer, SUPPORTER_PATH[_type]);
+Supporter::Supporter(int x, int y, int _type) {
+    if (_type == 0) {
+        max_frame = 9;
+    } else {
+        max_frame = 1;
+    }
+
+    centerPoint = {SUP_SIZE[_type]/2, SUP_SIZE[_type]/2};
+
     type = _type;
     buff = S_BUFF[_type];
     lever = 0;
-    showUpdate = true;
+    showRangeCircle = true;
 
     sX = (int)(x / 50) * 50 + 25;
     sY = (int)(y / 50) * 50 + 25;
 
-    dstrect_s.x = sX - GUN_BASE_SIZE/2; dstrect_s.y = sY - GUN_BASE_SIZE/2;
-    dstrect_s.h = GUN_BASE_SIZE; dstrect_s.w = GUN_BASE_SIZE;
+    degree = 0;
+    frame = 0;
 
-    rTexture = loadTexture(gRenderer, SHOOTING_RANGE_CIRCLE_PATH);
+    dstrect_bs.h = GUN_BASE_SIZE; dstrect_bs.w = GUN_BASE_SIZE;
+    dstrect_bs.x = sX - dstrect_bs.w / 2; dstrect_bs.y = sY - dstrect_bs.h / 2;
+
+    dstrect_s.x = sX - SUP_SIZE[type]/2; dstrect_s.y = sY - SUP_SIZE[type]/2;
+    dstrect_s.h = SUP_SIZE[type]; dstrect_s.w = SUP_SIZE[type];
+
     setRange(S_RANGE[_type]);
 
-    SDL_SetTextureBlendMode(rTexture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(rTexture, 30);
+    timeID = SDL_GetTicks();
 
 }
-Supporter::~Supporter() {
-    SDL_DestroyTexture(sTexture);
-    SDL_DestroyTexture(rTexture);
-    sTexture = NULL;
-    rTexture = NULL;
-}
+
+Supporter::~Supporter() {}
 
 bool Supporter::clickOn() {
-    if (!showUpdate) {
-        showUpdate = true;
+    if (!showRangeCircle) {
+        showRangeCircle = true;
         return true;
     } else {
-        showUpdate = false;
+        showRangeCircle = false;
         return false;
     }
-}
-
-int Supporter::checkClickOnUpdateButton(int x, int y, int gem) {
-// buff = S_inc_buff
 }
 
 bool Supporter::inRange(int x, int y) {
@@ -58,20 +61,23 @@ void Supporter::setRange(int r) {
     dstrect_r.y = sY - dstrect_r.h / 2;
 }
 
-void Supporter::enableUpdate() {showUpdate = true;}
-void Supporter::unenableUpdate() {showUpdate = false;}
+void Supporter::enableUpdate() {showRangeCircle = true;}
+void Supporter::unenableUpdate() {showRangeCircle = false;}
 
-void Supporter::drawToRenderer(SDL_Renderer* &gRenderer) {
-    SDL_RenderCopy(gRenderer, sTexture, NULL, &dstrect_s);
-}
+void Supporter::drawToRenderer(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+    SDL_RenderCopy(gRenderer, gTexture->baseSupporterTexture, NULL, &dstrect_bs);
+    SDL_RenderCopyEx(gRenderer, gTexture->supporterTexture[type][frame], NULL, &dstrect_s, degree, &centerPoint, SDL_FLIP_NONE);
 
-void Supporter::drawRangeCircle(SDL_Renderer* &gRenderer) {
-    if (showUpdate)
-        SDL_RenderCopy(gRenderer, rTexture, NULL, &dstrect_r);
-}
-
-void Supporter::drawUpdateBoard(SDL_Renderer* &gRenderer) {
-    if (showUpdate) {
-
+    if (SDL_GetTicks() - timeID >= 100) {
+        frame++;
+        if (frame == max_frame) frame = 0;
+        timeID = SDL_GetTicks();
     }
+
+    if (type == 1) degree += 3;
+}
+
+void Supporter::drawRangeCircle(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+    if (showRangeCircle)
+        SDL_RenderCopy(gRenderer, gTexture->rangeCircleTexture, NULL, &dstrect_r);
 }

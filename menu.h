@@ -8,29 +8,31 @@
 #include "config.h"
 #include "utils.h"
 #include "sound.h"
+#include "texture.h"
 
 class Menu {
 public:
-    Menu(SDL_Renderer* &gRenderer);
+    Menu();
     ~Menu();
 
-    void drawMenu(SDL_Renderer* &gRenderer);
+    void drawMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
 
     int clickOn(int x, int y);
 
-    void optionsMenu(SDL_Renderer* &gRenderer, Sound* &sound);
-    void drawOptionsMenu(SDL_Renderer* &gRenderer);
+    void optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound);
+    void drawOptionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
 
 private:
-    SDL_Texture* menuTexture = NULL;
-    SDL_Texture* oMenuTexture = NULL;
-    SDL_Texture* pButtonTexture = NULL;
-    SDL_Texture* oButtonTexture = NULL;
-    SDL_Texture* qButtonTexture = NULL;
 
     SDL_Rect dstrect;
-    // up-left position of button
-    int pX, pY;
-    int oX, oY;
-    int qX, qY;
+    // options menu
+    SDL_Rect dstrect_om;
+    // button
+    SDL_Rect dstrect_p, dstrect_o, dstrect_q;
+    // resume button
+    SDL_Rect dstrect_r;
+    // mute icon
+    SDL_Rect dstrect_m_m, dstrect_m_s;
+
+    bool musicPlaying, soundPlaying;
 };

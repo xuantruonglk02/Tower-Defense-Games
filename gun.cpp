@@ -1,10 +1,6 @@
 #include "gun.h"
 
-Gun::Gun(SDL_Renderer* &gRenderer, double x, double y, int _type) {
-    // load gun texture
-    gTexture[0] = loadTexture(gRenderer, GUN_PATH[_type][0]);
-    gTexture[1] = loadTexture(gRenderer, GUN_PATH[_type][1]);
-    bsTexture = loadTexture(gRenderer, GUN_BASE_PATH);
+Gun::Gun(double x, double y, int _type) {
 
     type = _type;
 
@@ -40,44 +36,36 @@ Gun::Gun(SDL_Renderer* &gRenderer, double x, double y, int _type) {
     degree = 0;
 
     if (_type == 3) {
-        rkTexture = loadTexture(gRenderer, ROCKET_FIRST);
 
         dstrest_rk.h = ROCKET_FIRST_H; dstrest_rk.w = ROCKET_FIRST_W;
         dstrest_rk.x = gX - dstrest_rk.w / 2;
         dstrest_rk.y = gY - dstrest_rk.h / 2;
 
-        centerPoint_rk = {dstrest_rk.w / 2; dstrest_rk.h / 2};
+        centerPoint_rk = {dstrest_rk.w / 2, dstrest_rk.h / 2};
+
+        showRocket = true;
     }
 
-    // load range shooting circle texture
-    cTexture = loadTexture(gRenderer, SHOOTING_RANGE_CIRCLE_PATH);
     // circle position follow the gun position
     setRange(G_RANGE[_type]);
-    // make the circle is transparent
-    SDL_SetTextureBlendMode(cTexture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(cTexture, 30);
 
     // load update board texture
-    ubTexture = loadTexture(gRenderer, UPDATE_BOARD_PATH);
-    dstrect_ub.h = UPDATE_BOARD_HEIGHT;
-    dstrect_ub.w = UPDATE_BOARD_WIDTH;
-    dstrect_ub.x = PLAY_ZONE_X/2 - UPDATE_BOARD_WIDTH/2;
-    dstrect_ub.y = 374;
+    dstrect_ub.h = UPDATE_BOARD_H;
+    dstrect_ub.w = UPDATE_BOARD_W;
+    dstrect_ub.x = 3;
+    dstrect_ub.y = PLAY_ZONE_Y + PLAY_ZONE_H - dstrect_ub.h;
     
     // lever
-    lTexture = loadTexture(gRenderer, LEVER_PATH);
     dstrect_l[0].h = 35; dstrect_l[0].w = 75; dstrect_l[0].x = dstrect_ub.x + 5; dstrect_l[0].y = dstrect_ub.y + 5+5+15+7;
     dstrect_l[1].h = 35; dstrect_l[1].w = 75; dstrect_l[1].x = dstrect_l[0].x; dstrect_l[1].y = dstrect_l[0].y + 68;
     dstrect_l[2].h = 35; dstrect_l[2].w = 75; dstrect_l[2].x = dstrect_l[0].x; dstrect_l[2].y = dstrect_l[1].y + 68;
 
     // block
-    bTexture = loadTexture(gRenderer, BLOCK_PATH);
     dstrect_b[0].h = 35; dstrect_b[0].w = 60; dstrect_b[0].x = dstrect_l[0].x + 15; dstrect_b[0].y = dstrect_l[0].y;
     dstrect_b[1].h = 35; dstrect_b[1].w = 60; dstrect_b[1].x = dstrect_l[1].x + 15; dstrect_b[1].y = dstrect_l[1].y;
     dstrect_b[2].h = 35; dstrect_b[2].w = 60; dstrect_b[2].x = dstrect_l[2].x + 15; dstrect_b[2].y = dstrect_l[2].y;
 
     // inc button
-    ibTexture = loadTexture(gRenderer, INC_BUTTON_PATH);
     dstrect_ib[0].h = 30; dstrect_ib[0].w = 30; dstrect_ib[0].x = dstrect_ub.x + dstrect_l[0].w + 5+5; dstrect_ib[0].y = dstrect_ub.y + 5+5+15+10;
     dstrect_ib[1].h = 30; dstrect_ib[1].w = 30; dstrect_ib[1].x = dstrect_ib[0].x; dstrect_ib[1].y = dstrect_ib[0].y + 68;
     dstrect_ib[2].h = 30; dstrect_ib[2].w = 30; dstrect_ib[2].x = dstrect_ib[0].x; dstrect_ib[2].y = dstrect_ib[1].y + 68;
@@ -87,56 +75,42 @@ Gun::Gun(SDL_Renderer* &gRenderer, double x, double y, int _type) {
 
     frame = 0;
 }
-Gun::~Gun() {
-    SDL_DestroyTexture(gTexture[0]);
-    SDL_DestroyTexture(gTexture[1]);
-    SDL_DestroyTexture(cTexture);
-    SDL_DestroyTexture(ubTexture);
-    SDL_DestroyTexture(ibTexture);
-    SDL_DestroyTexture(lTexture);
-    SDL_DestroyTexture(bTexture);
-    SDL_DestroyTexture(bsTexture);
-    SDL_DestroyTexture(rkTexture);
-    gTexture[0] = NULL;
-    gTexture[1] = NULL;
-    bsTexture = NULL;
-    cTexture = NULL;
-    ubTexture = NULL;
-    ibTexture = NULL;
-    lTexture = NULL;
-    bTexture = NULL;
-    rkTexture = NULL;
-}
+Gun::~Gun() {}
 
-void Gun::drawToRender(SDL_Renderer* &gRenderer) {
+void Gun::drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     // draw base
-    SDL_RenderCopy(gRenderer, bsTexture, NULL, &dstrect_bs);
+    SDL_RenderCopy(gRenderer, gTexture->baseGunTexture, NULL, &dstrect_bs);
+    SDL_RenderCopyEx(gRenderer, gTexture->gunTexture[type][frame], NULL, &dstrect_g[frame], degree, &centerPoint_g[frame], SDL_FLIP_NONE);
 
-    SDL_RenderCopyEx(gRenderer, gTexture[frame], NULL, &dstrect_g[frame], degree, &centerPoint_g[frame], SDL_FLIP_NONE);
+    if (type == 3) {
+        if (showRocket == false && SDL_GetTicks() - timeID >= G_SHOT_DELAY_TIME[type] / 3) showRocket = true;
+        if (showRocket)
+            SDL_RenderCopyEx(gRenderer, gTexture->rocketNotFireTexture, NULL, &dstrest_rk, degree, &centerPoint_rk, SDL_FLIP_NONE);
+    }
 
     frame = 0;
 }
 
-void Gun::drawRangeCircle(SDL_Renderer* &gRenderer) {
+void Gun::drawRangeCircle(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     // shooting range circle
     // draw range shooting circle follow the gun when true
     if (showUpdate)
-        SDL_RenderCopy(gRenderer, cTexture, NULL, &dstrect_c);
+        SDL_RenderCopy(gRenderer, gTexture->rangeCircleTexture, NULL, &dstrect_c);
 }
 
-void Gun::drawUpdateBoard(SDL_Renderer* &gRenderer) {
+void Gun::drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     // draw range shooting circle follow the gun when true
     if (showUpdate) {
         // update board
-        SDL_RenderCopy(gRenderer, ubTexture, NULL, &dstrect_ub);
+        SDL_RenderCopy(gRenderer, gTexture->updateBoardTexture, NULL, &dstrect_ub);
         // update button
         for (int i = 0; i < 3; i++) {
             // inc button
-            SDL_RenderCopy(gRenderer, ibTexture, NULL, &dstrect_ib[i]);
+            SDL_RenderCopy(gRenderer, gTexture->updateButtonTexture, NULL, &dstrect_ib[i]);
             // lever
-            SDL_RenderCopy(gRenderer, lTexture, NULL, &dstrect_l[i]);
+            SDL_RenderCopy(gRenderer, gTexture->leverTexture, NULL, &dstrect_l[i]);
             // block
-            SDL_RenderCopy(gRenderer, bTexture, NULL, &dstrect_b[i]);
+            SDL_RenderCopy(gRenderer, gTexture->blockTexture, NULL, &dstrect_b[i]);
         }
     }
 }
@@ -227,7 +201,10 @@ int Gun::getType() {return type;}
 int Gun::getX() {return gX;}
 int Gun::getY() {return gY;}
 
-void Gun::fire() {frame++;}
+void Gun::fire() {
+    frame++;
+    showRocket = false;
+}
 
 bool Gun::onShot(double x, double y) {
     if (sqrt((gX - x)*(gX - x) + (gY - y)*(gY - y)) <= range) {

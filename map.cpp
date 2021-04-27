@@ -1,15 +1,7 @@
 #include "map.h"
 
-Map::Map(SDL_Renderer* &gRenderer) {
-    mapTexture = loadTexture(gRenderer, MAP_PATH);
-    roadTexture = loadTexture(gRenderer, ROAD_PATH);
-}
-Map::~Map() {
-    SDL_DestroyTexture(mapTexture);
-    SDL_DestroyTexture(roadTexture);
-    mapTexture = NULL;
-    roadTexture = NULL;
-}
+Map::Map() {}
+Map::~Map() {}
 
 void Map::readFromFile(bool &quit) {
     ifstream finp("map/map1.in");
@@ -26,14 +18,14 @@ void Map::readFromFile(bool &quit) {
     finp.close();
 }
 
-void Map::drawToRender(SDL_Renderer* &gRenderer) {
+void Map::drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     // draw map background
-    SDL_RenderCopy(gRenderer, mapTexture, NULL, NULL);
+    SDL_RenderCopy(gRenderer, gTexture->mapTexture, NULL, NULL);
     // draw road
     dstrect.h = 50; dstrect.w = 50;
     dstrect.x = PLAY_ZONE_X;
     dstrect.y = yRoad[0] * 50 + PLAY_ZONE_Y;
-    SDL_RenderCopy(gRenderer, roadTexture, NULL, &dstrect);
+    SDL_RenderCopy(gRenderer, gTexture->roadTexture, NULL, &dstrect);
 
     for (int i = 1; i < xRoad.size(); i++) {
         int u = xRoad[i-1], v = yRoad[i-1];
@@ -46,7 +38,7 @@ void Map::drawToRender(SDL_Renderer* &gRenderer) {
             }
             dstrect.x = u * 50 + PLAY_ZONE_X;
             dstrect.y = v * 50 + PLAY_ZONE_Y;
-            SDL_RenderCopy(gRenderer, roadTexture, NULL, &dstrect);
+            SDL_RenderCopy(gRenderer, gTexture->roadTexture, NULL, &dstrect);
         } while (u != xRoad[i] || v != yRoad[i]);
     }
 }
@@ -73,3 +65,7 @@ vector<int> Map::getDir() {return dir;}
 
 int Map::getYFirst() {return yRoad[0];}
 int Map::getYLast() {return yRoad[yRoad.size()-1];}
+int Map::getDir(int pos) {
+    if (pos == dir.size()) return 1;
+    else return dir[pos];
+}

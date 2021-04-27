@@ -53,6 +53,7 @@
 		<Unit filename="sound.h" />
 		<Unit filename="supporter.cpp" />
 		<Unit filename="supporter.h" />
+		<Unit filename="texture.h" />
 		<Unit filename="utils.cpp" />
 		<Unit filename="utils.h" />
 		<Unit filename="wave.cpp" />

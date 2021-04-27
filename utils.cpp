@@ -51,28 +51,7 @@ void treatPosition(double x, double y, int &row, int &col) {
         else col = (int)(x - PLAY_ZONE_X) / 50;
 }
 
-// void loadTexture(SDL_Renderer* &gRenderer) {
-//     menuTexture = loadTexture(gRenderer, MENU_PATH);
-//     pButtonbTexture = loadTexture(gRenderer, PLAY_PATH);
-//     oButtonTexture = loadTexture(gRenderer, OPTIONS_PATH);
-//     qButtonTexture = loadTexture(gRenderer, QUIT_PATH);
-//     mapTexture = loadTexture(gRenderer, MAP_PATH);
-//     roadTexture = loadTexture(gRenderer, ROAD_PATH);
-//     cbtTexture = loadTexture(gRenderer, CTB_PATH);
-//     bulletTexture = loadTexture(gRenderer, BULLET_PATH);
-//     pauseTexture = loadTexture(gRenderer, PAUSE_PATH);
-//     srCircleTexture = loadTexture(gRenderer, SHOOTING_RANGE_CIRCLE_PATH);
-    
-//     for (int i = 0; i < 6; i++)
-//         gunTexture[i] = loadTexture(gRenderer, GUN_PATH[i]);
-//     for (int i = 0; i < 3; i++)
-//         enemyTexture[i] = loadTexture(gRenderer, ENEMY_PATH[i]);
-// }
-
-
-SDL_Texture* loadTexture(SDL_Renderer* &gRenderer, std::string path) {
-    //The final texture
-    SDL_Texture* newTexture = NULL;
+void loadTexture(SDL_Renderer* &gRenderer, SDL_Texture* &newTexture, std::string path) {
 
     //Load image at specified path
     SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
@@ -93,5 +72,4 @@ SDL_Texture* loadTexture(SDL_Renderer* &gRenderer, std::string path) {
         SDL_FreeSurface( loadedSurface );
     }
 
-    return newTexture;
 }

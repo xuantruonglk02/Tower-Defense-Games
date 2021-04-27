@@ -6,15 +6,16 @@
 
 #include "config.h"
 #include "utils.h"
+#include "texture.h"
 
 class Base {
 public:
-    Base(SDL_Renderer* &gRenderer, int y);
+    Base(int y);
     ~Base();
 
     void setHP(int eHP);
 
-    void drawToRender(SDL_Renderer* &gRenderer);
+    void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
     
     double getHPRate();
 
@@ -24,7 +25,6 @@ public:
 private:
     const int MAXHP = 500;
 
-    SDL_Texture* texture = NULL;
     SDL_Rect dstrect;
     int hp;
 };

@@ -13,5 +13,4 @@ void waitUntilKeyPressed();
 
 void treatPosition(double x, double y, int &row, int &col);
 
-SDL_Texture* loadTexture(SDL_Renderer* &gRenderer, std::string path);
-
+void loadTexture(SDL_Renderer* &gRenderer, SDL_Texture* &newTexture, std::string path);

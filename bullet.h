@@ -7,19 +7,20 @@
 
 #include "config.h"
 #include "utils.h"
+#include "texture.h"
 #include "enemy.h"
 
 class Bullet {
 public:
-    Bullet(SDL_Renderer* &gRenderer, double gX, double gY, Enemy* &_enemy, int _damage, int _type);
+    Bullet(double gX, double gY, Enemy* &_enemy, int _damage, int _type);
     ~Bullet();
 
     void updateEnemyPosition();
     void updateDegree();
-    void updatePos(int k);
+    void updatePos();
     void setDstRect();
 
-    void drawToRender(SDL_Renderer* &gRenderer);
+    void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
 
     int getType();
 
@@ -30,7 +31,8 @@ public:
 
     int getDamage();
 
-    void setTarget(Enemy* enemy);
+    void findNewTarget(vector<Enemy*> &enemys);
+    void setTarget(Enemy* &enemy);
     Enemy* getTarget();
 
     void targetKilled();
@@ -39,8 +41,6 @@ public:
     bool hitTheTarget();
 
 private:
-
-    SDL_Texture* bTexture = NULL;
 
     SDL_Point centerPoint;
 

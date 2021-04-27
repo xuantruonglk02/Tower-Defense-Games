@@ -1,6 +1,6 @@
 #include "bullet.h"
-
-Bullet::Bullet(SDL_Renderer* &gRenderer, double gX, double gY, Enemy* &_enemy, int _damage, int _type) {
+#include "game.h"
+Bullet::Bullet(double gX, double gY, Enemy* &_enemy, int _damage, int _type) {
     type = _type;
     damage = _damage;
     success = false;
@@ -8,29 +8,36 @@ Bullet::Bullet(SDL_Renderer* &gRenderer, double gX, double gY, Enemy* &_enemy, i
     firstX = gX; firstY = gY;
     lastX = _enemy->getX(); lastY = _enemy->getY();
     double d = sqrt((lastX - gX)*(lastX - gX) + (lastY - gY)*(lastY - gY));
+    
+    setDstRect();
 
-    if (type < 2) {
-        bTexture = loadTexture(gRenderer, BULLET_PATH[0]);
-        setDstRect();
+    if (type == 0) {
+        dstrect.w = BULLET_SIZE; dstrect.h = BULLET_SIZE;
+
+        bulletX = (lastX - gX) * (GUN_H[type][1] / 2 + BULLET_SIZE / 2) / d + gX;
+        bulletY = (lastY - gY) * (GUN_H[type][1] / 2 + BULLET_SIZE / 2) / d + gY;
+
+        disToLast = d - GUN_BASE_SIZE/2 - BULLET_SIZE/2;
+    } else if (type == 1) {
+        dstrect.w = DOUBLE_BULLET_W; dstrect.h = DOUBLE_BULLET_H;
+
+        centerPoint = {DOUBLE_BULLET_W/2, DOUBLE_BULLET_H/2};
 
         bulletX = (lastX - gX) * (GUN_H[type][1] / 2 + BULLET_SIZE / 2) / d + gX;
         bulletY = (lastY - gY) * (GUN_H[type][1] / 2 + BULLET_SIZE / 2) / d + gY;
 
         disToLast = d - GUN_BASE_SIZE/2 - BULLET_SIZE/2;
     } else if (type == 2) {
-        bTexture = loadTexture(gRenderer, BULLET_PATH[1]);
-        setDstRect();
+        dstrect.w = 5;
 
-        centerPoint = {1, 0};
+        centerPoint = {2, 0};
 
-        firstX = (lastX - gX) * (GUN_H[type][1] / 2) / d + gX;
-        firstY = (lastY - gY) * (GUN_H[type][1] / 2) / d + gY;
+        bulletX = (lastX - gX) * (GUN_H[type][1] / 2) / d + gX;
+        bulletY = (lastY - gY) * (GUN_H[type][1] / 2) / d + gY;
 
         disToLast = d - GUN_H[type][1] / 2 - ENEMY_SIZE / 2;
-
     } else {
-        bTexture = loadTexture(gRenderer, BULLET_PATH[2]);
-        setDstRect();
+        dstrect.h = ROCKET_H[1]; dstrect.w = ROCKET_W[1];
 
         centerPoint = {ROCKET_W[1] / 2, ROCKET_H[1] / 2};
 
@@ -43,10 +50,7 @@ Bullet::Bullet(SDL_Renderer* &gRenderer, double gX, double gY, Enemy* &_enemy, i
     }
 }
 
-Bullet::~Bullet() {
-    SDL_DestroyTexture(bTexture);
-    bTexture = NULL;
-}
+Bullet::~Bullet() {}
 
 void Bullet::updateEnemyPosition() {
     if (success) {
@@ -60,49 +64,62 @@ void Bullet::updateEnemyPosition() {
 }
 
 void Bullet::updateDegree() {
-    double r = sqrt((bulletX - lastX)*(bulletX - lastX) + (bulletY - lastY)*(bulletY - lastY));
-    degree = asin((lastX - bulletX) / r) * 180 / M_PI;
+    if (type == 2) {
+        double r = sqrt((firstX - lastX)*(firstX - lastX) + (firstY - lastY)*(firstY - lastY));
+        degree = asin((lastX - firstX) / r) * 180 / M_PI;
+    } else {
+        double r = sqrt((bulletX - lastX)*(bulletX - lastX) + (bulletY - lastY)*(bulletY - lastY));
+        degree = asin((lastX - bulletX) / r) * 180 / M_PI;
+    }
     if (lastY > bulletY) degree = 180 - degree;
 }
 
-void Bullet::updatePos(int k) {
-    bulletX = (bulletX - lastX) * (disToLast - BULLET_SPEED[type]) / disToLast + lastX;
-    bulletY = (bulletY - lastY) * (disToLast - BULLET_SPEED[type]) / disToLast + lastY;
-    disToLast -= BULLET_SPEED[type];
-}
-
 void Bullet::setDstRect() {
-    if (type < 2) {
+    if (type == 0) {
         dstrect.x = bulletX - BULLET_SIZE/2;
         dstrect.y = bulletY - BULLET_SIZE/2;
-        dstrect.h = BULLET_SIZE; dstrect.w = BULLET_SIZE;
+    } else if (type == 1) {
+        dstrect.x = bulletX - DOUBLE_BULLET_W/2;
+        dstrect.y = bulletY - DOUBLE_BULLET_H/2;
     } else if (type == 2) {
-        dstrect.x = firstX - 1;
-        dstrect.y = firstY;
-        dstrect.h = disToLast; dstrect.w = 3;
+        dstrect.x = bulletX - 2;
+        dstrect.y = bulletY;
+        dstrect.h = disToLast;
     } else {
         dstrect.x = bulletX - ROCKET_W[1] / 2;
         dstrect.y = bulletY - ROCKET_H[1] / 2;
-        dstrect.h = ROCKET_H[1]; dstrect.w = ROCKET_W[1];
     }
 }
 
-void Bullet::drawToRender(SDL_Renderer* &gRenderer) {
-    if (type < 2) {
-        setDstRect();
-        SDL_RenderCopy(gRenderer, bTexture, NULL, &dstrect);
-    } else if (type == 2) {
-        //SDL_RenderDrawLine(gRenderer, firstX, firstY, lastX, lastY);
+void Bullet::updatePos() {
+    if (type == 2) {
+        bulletX = GUN_H[type][1] / 2 * sin(180 - degree);
+        bulletY = GUN_H[type][1] / 2 * cos(180 - degree);
+    } else {
+        bulletX = (bulletX - lastX) * (disToLast - BULLET_SPEED[type]) / disToLast + lastX;
+        bulletY = (bulletY - lastY) * (disToLast - BULLET_SPEED[type]) / disToLast + lastY;
+        disToLast -= BULLET_SPEED[type];
+    }
+}
+
+void Bullet::drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+    setDstRect();
+
+    if (type == 0) {
+        SDL_RenderCopy(gRenderer, gTexture->bulletTexture[type], NULL, &dstrect);
+    } else if (type == 1) {
         updateDegree();
-        SDL_RenderCopyEx(gRenderer, bTexture, NULL, &dstrect, degree, &centerPoint, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(gRenderer, gTexture->bulletTexture[type], NULL, &dstrect, degree, &centerPoint, SDL_FLIP_NONE);
+    } else if (type == 2) {
+        updateDegree();
+        SDL_RenderCopyEx(gRenderer, gTexture->bulletTexture[type], NULL, &dstrect, 180 + degree, &centerPoint, SDL_FLIP_NONE);
     } else {
         updateEnemyPosition();
         updateDegree();
-        setDstRect();
-        SDL_RenderCopyEx(gRenderer, bTexture, NULL, &dstrect, degree, &centerPoint, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(gRenderer, gTexture->bulletTexture[type], NULL, &dstrect, degree, &centerPoint, SDL_FLIP_NONE);
     }
 
-    if (type != 2) updatePos(type);
+    updatePos();
 }
 
 int Bullet::getType() {return type;}
@@ -114,14 +131,21 @@ double Bullet::getLastY() {return lastY;}
 
 int Bullet::getDamage() {return damage;}
 
-void Bullet::setTarget(Enemy* enemy) {target = enemy;}
+void Bullet::findNewTarget(vector<Enemy*> &enemys) {
+    for (int i = 0; i < enemys.size(); i++)
+        if (!enemys[i]->isDead()) {
+            setTarget(enemys[i]);
+            return;
+        }
+}
+
+void Bullet::setTarget(Enemy* &enemy) {target = enemy;}
 Enemy* Bullet::getTarget() {return target;}
 
 void Bullet::targetKilled() {success = true;}
 
 bool Bullet::outOfScreen() {
-    if (bulletX - BULLET_SIZE/2 < PLAY_ZONE_X || bulletX + BULLET_SIZE/2 > PLAY_ZONE_X + PLAY_ZONE_W
-        || bulletY - BULLET_SIZE/2 < PLAY_ZONE_Y || bulletY + BULLET_SIZE/2 > PLAY_ZONE_Y + PLAY_ZONE_H)
+    if (bulletX < PLAY_ZONE_X || bulletX > PLAY_ZONE_X + PLAY_ZONE_W || bulletY < PLAY_ZONE_Y || bulletY > PLAY_ZONE_Y + PLAY_ZONE_H)
         return true;
     return false;
 }

@@ -1,7 +1,14 @@
 #include "writer.h"
 
-Writer::Writer() {
+Writer::Writer(string _font, int _size, Uint8 _r, Uint8 _g, Uint8 _b) {
     TTF_Init();
+    
+    font = TTF_OpenFont(_font.c_str(), _size);
+    if( font == NULL ) {
+        printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
+    }
+
+    textColor = {_r, _g, _b};
 }
 
 Writer::~Writer() {
@@ -11,19 +18,19 @@ Writer::~Writer() {
     textTexture = NULL;
 }
 
-void Writer::setFont(int textSize, string _font) {
-    font = TTF_OpenFont(_font.c_str(), textSize);
-    if( font == NULL ) {
-        printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
-    }
-}
-
 void Writer::setColorText(Uint8 r, Uint8 g, Uint8 b) {
     textColor = {r, g, b};
 }
 
-SDL_Texture* Writer::loadTextTexture(SDL_Renderer* &gRenderer, string text, int &w, int &h) {
-    SDL_Texture* mTexture = NULL;
+void Writer::writeText(SDL_Renderer* &gRenderer, string text, int _x, int _y) {
+    loadTextTexture(gRenderer, text);
+    if (_x == -1) dstrect.x = PLAY_ZONE_X/2 - dstrect.w/2;
+    else dstrect.x = _x;
+    dstrect.y = _y;
+    SDL_RenderCopy(gRenderer, textTexture, NULL, &dstrect);
+}
+
+void Writer::loadTextTexture(SDL_Renderer* &gRenderer, string text) {
 
     //Render text surface
     SDL_Surface* textSurface = TTF_RenderText_Solid( font, text.c_str(), textColor );
@@ -34,8 +41,8 @@ SDL_Texture* Writer::loadTextTexture(SDL_Renderer* &gRenderer, string text, int 
     else
     {
         //Create texture from surface pixels
-        mTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
-        if( mTexture == NULL )
+        textTexture = SDL_CreateTextureFromSurface( gRenderer, textSurface );
+        if( textTexture == NULL )
         {
             printf( "Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError() );
         }
@@ -45,8 +52,6 @@ SDL_Texture* Writer::loadTextTexture(SDL_Renderer* &gRenderer, string text, int 
     }
 
     // get width and height of text
-    TTF_SizeText(font, text.c_str(), &w, &h);
+    TTF_SizeText(font, text.c_str(), &dstrect.w, &dstrect.h);
 
-    //Return success
-    return mTexture;
 }

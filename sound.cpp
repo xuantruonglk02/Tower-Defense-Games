@@ -7,7 +7,8 @@ Sound::Sound() {
 
     loadMedia();
     
-    soundEffectOff = false;
+    musicPlaying = true;
+    soundPlaying = true;
 }
 Sound::~Sound() {
     Mix_HaltMusic();
@@ -40,16 +41,13 @@ void Sound::playMusic() {
 }
 
 void Sound::playEffectSoundWhenGetHurt() {
-    if (soundEffectOff) return;
+    if (!soundPlaying) return;
     Mix_PlayChannel(-1, getHurtEffectSound, 0);
 }
 
-void Sound::musicInOptions() {
+void Sound::clickOnMusicItem() {
     if (Mix_PlayingMusic() == 1) Mix_HaltMusic();
     else playMusic();
 }
 
-void Sound::soundEffectInOptions() {
-    if (!soundEffectOff) {soundEffectOff = true;}
-    else soundEffectOff = false;
-}
+void Sound::clickOnSoundItem() {soundPlaying = !soundPlaying;}

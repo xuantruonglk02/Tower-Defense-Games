@@ -1,17 +1,11 @@
 #include "enemy.h"
 
-Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
-    // load enemy texture
-    eTexture = loadTexture(gRenderer, ENEMY_PATH[_type]);
-    //
+Enemy::Enemy(int y, int _type) {
     dstrect_e.h = ENEMY_SIZE; dstrect_e.w = ENEMY_SIZE;
-    dstrect_e.x = -ENEMY_SIZE/2; dstrect_e.y = y - ENEMY_SIZE/2;
+
+    dstrect_hp.w = dstrect_e.w; dstrect_hp.h = 5;
 
     eX = 0; eY = y;
-
-    // hp bar
-    hpTexture = loadTexture(gRenderer, HPBAR_PATH);
-    dstrect_hp = {dstrect_e.x, dstrect_e.y - 10, dstrect_e.w, 5};
 
     // use the first value array
     type = _type;
@@ -22,10 +16,10 @@ Enemy::Enemy(SDL_Renderer* &gRenderer, int y, int _type) {
 
     // first position on road
     curPos = 0;
+
+    showHP = false;
 }
 Enemy::~Enemy() {
-    SDL_DestroyTexture(eTexture);
-    eTexture = NULL;
 }
 
 void Enemy::updatePos(const vector<int> &dir, const vector<int> &xRoad, const vector<int> &yRoad) {
@@ -52,22 +46,28 @@ void Enemy::updatePos(const vector<int> &dir, const vector<int> &xRoad, const ve
     }
 }
 
-void Enemy::drawToRender(SDL_Renderer* &gRenderer) {
+void Enemy::drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     dstrect_e.x = eX - ENEMY_SIZE/2;
     dstrect_e.y = eY - ENEMY_SIZE/2;
-    SDL_RenderCopy(gRenderer, eTexture, NULL, &dstrect_e);
+    SDL_RenderCopy(gRenderer, gTexture->enemyTexture[type], NULL, &dstrect_e);
 
-    dstrect_hp.x = dstrect_e.x;
-    dstrect_hp.y = dstrect_e.y - dstrect_hp.h - 5;
-    SDL_RenderCopy(gRenderer, hpTexture, NULL, &dstrect_hp);
+    if (showHP) {
+        dstrect_hp.x = dstrect_e.x;
+        dstrect_hp.y = dstrect_e.y - dstrect_hp.h - 3;
+        SDL_RenderCopy(gRenderer, gTexture->hpBarTexture, NULL, &dstrect_hp);
+        
+        if (SDL_GetTicks() - effectTimeID > 3000) showHP = false;
+    }
+
 }
 
 int Enemy::getX() {return eX;}
 int Enemy::getY() {return eY;}
-int Enemy::getDam() {return damage;}
+int Enemy::getCurrentPos() {return curPos;}
+int Enemy::getDamage() {return damage;}
 int Enemy::getPrize() {return prize;}
 
-bool Enemy::getHit(double bX, double bY, int damamge, int bType) {
+bool Enemy::getHit(double bX, double bY, int bDamage, int bType) {
     int range;
     if (bType < 2) range = ENEMY_SIZE/2 + BULLET_SIZE/2;
     else if (bType == 2) range = ENEMY_SIZE/2;
@@ -81,17 +81,22 @@ bool Enemy::getHit(double bX, double bY, int damamge, int bType) {
         speed = E_SPEED[type] / 2;
     }
 
-    hp -= damamge;
+    hp -= bDamage;
     updateHPBar();
+
+    effectTimeID = SDL_GetTicks();
+    showHP = true;
 
     return true;
 }
 
-void Enemy::getBoom(double bX, double bY, int damamge) {
+void Enemy::getBoom(double bX, double bY, int bDamage) {
     if (sqrt((eX - bX)*(eX - bX) + (eY - bY)*(eY - bY)) <= BOOM_RANGE) {
-        hp -= damage;
+        hp -= bDamage / 2;
         updateHPBar();
-        printf(" get %d damage\n", damage);
+
+        effectTimeID = SDL_GetTicks();
+        showHP = true;
     }
 }
 

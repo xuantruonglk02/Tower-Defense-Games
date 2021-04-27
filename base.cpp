@@ -1,7 +1,6 @@
 #include "base.h"
 
-Base::Base(SDL_Renderer* &gRenderer, int y) {
-    texture = loadTexture(gRenderer, BASE_PATH);
+Base::Base(int y) {
     dstrect.x = PLAY_ZONE_X + PLAY_ZONE_W - 10;
     dstrect.y = y * 50 + PLAY_ZONE_Y - 10;
     dstrect.h = 70;
@@ -9,15 +8,12 @@ Base::Base(SDL_Renderer* &gRenderer, int y) {
     hp = MAXHP;
 }
 
-Base::~Base() {
-    SDL_DestroyTexture(texture);
-    texture = NULL;
-}
+Base::~Base() {}
 
 void Base::setHP(int eHP) {hp -= eHP;}
 
-void Base::drawToRender(SDL_Renderer* &gRenderer) {
-    SDL_RenderCopy(gRenderer, texture, NULL, &dstrect);
+void Base::drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+    SDL_RenderCopy(gRenderer, gTexture->baseTexture, NULL, &dstrect);
 }
 
 double Base::getHPRate() {return 1.0 * hp / MAXHP;}

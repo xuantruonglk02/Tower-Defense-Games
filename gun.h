@@ -8,15 +8,16 @@
 
 #include "config.h"
 #include "utils.h"
+#include "texture.h"
 
 class Gun {
 public:
-    Gun(SDL_Renderer* &gRenderer, double x, double y, int _type);
+    Gun(double x, double y, int _type);
     ~Gun();
 
-    void drawToRender(SDL_Renderer* &gRenderer);
-    void drawRangeCircle(SDL_Renderer* &gRenderer);
-    void drawUpdateBoard(SDL_Renderer* &gRenderer);
+    void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
+    void drawRangeCircle(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
+    void drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
 
     void changeShotDirection(int enemyX, int enemyY);
 
@@ -53,12 +54,6 @@ public:
     bool onShot(double x, double y);
 
 private:
-
-    const int UPDATE_BOARD_HEIGHT = 214;
-    const int UPDATE_BOARD_WIDTH = 124;
-    const int UPDATE_BOARD_BORDER = 5;
-    
-    const int INC_BUTTON_SIZE = 30;
     // border = 5
     // word h = 15
     // chu lui 3
@@ -67,28 +62,20 @@ private:
     // 68
 
     // gun
-    SDL_Texture* gTexture[2];
     SDL_Rect dstrect_g[2];
     // gun base
-    SDL_Texture* bsTexture = NULL;
     SDL_Rect dstrect_bs;
     // rocket not fire
-    SDL_Texture* rkTexture = NULL;
     SDL_Rect dstrest_rk;
     // range shooting circle
-    SDL_Texture* cTexture = NULL;
     SDL_Rect dstrect_c;
     // update board
-    SDL_Texture* ubTexture = NULL;
     SDL_Rect dstrect_ub;
     // inc button
-    SDL_Texture* ibTexture = NULL;
     SDL_Rect dstrect_ib[3];
     // lever
-    SDL_Texture* lTexture = NULL;
     SDL_Rect dstrect_l[3];
     // block
-    SDL_Texture* bTexture = NULL;
     SDL_Rect dstrect_b[3];
 
     SDL_Point centerPoint_g[2];
@@ -114,6 +101,8 @@ private:
     int price;
 
     int frame;
+
+    bool showRocket;
 
     // true when click on the gun
     bool showUpdate;

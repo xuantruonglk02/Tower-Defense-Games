@@ -20,10 +20,11 @@ void readWaveData(vector <Wave> &wave, bool &quit) {
 }
 
 int Wave::nextEnemy() {
-    if (typeCalling == amountOfType-1 && amountOfEnemy[typeCalling] == 1) nextWave = true;
-    if (amountOfEnemy[typeCalling] == 0) {
+    if (typeCalling == amountOfType-1 && called == amountOfEnemy[typeCalling] - 1) nextWave = true;
+    if (called == amountOfEnemy[typeCalling]) {
         typeCalling++;
+        called = 0;
     }
-    amountOfEnemy[typeCalling]--;
+    called++;
     return enemyType[typeCalling];
 }

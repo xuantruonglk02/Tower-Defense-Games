@@ -1,22 +1,28 @@
 #pragma once
 
 #include <iostream>
+#include <cmath>
 #include <string>
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include "config.h"
 #include "utils.h"
+#include "texture.h"
 #include "writer.h"
 
 class ctBoard {
 public:
-    ctBoard(SDL_Renderer* &gRenderer);
+    ctBoard();
     ~ctBoard();
     
-    void drawToRender(SDL_Renderer* &gRenderer, double rate);
+    void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture, double rate);
+    void drawNextButton(SDL_Renderer* &gRenderer, gameTexture* &gTexture, int k);
+
     // draw the gun which is dragged to the map
-    void drawGunChosen(SDL_Renderer* &gRenderer, double x, double y);
+    void drawTowerChosen(SDL_Renderer* &gRenderer, gameTexture* &gTexture, double x, double y);
+
+    void drawReviewBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture, double x, double y);
 
     void pauseMenu();
 
@@ -25,7 +31,9 @@ public:
     int getGemOfItemChosen();
 
     bool clickPauseButton(int x, int y);
-    bool aGunItemIsChosen(int x, int y);
+    bool clickNextButton(int x, int y);
+
+    bool aTowerIsChosen(int x, int y);
     int getTypeOfGunChosen();
 
     Uint32 getTimePause();
@@ -34,29 +42,15 @@ public:
 private:
     void setUpWriterForMoney();
     
-    void drawHPBar(SDL_Renderer* &gRenderer, double rate);
-    void drawGuns(SDL_Renderer* &gRenderer);
-    void drawLocks(SDL_Renderer* &gRenderer, int i);
+    void drawHPBar(SDL_Renderer* &gRenderer, gameTexture* &gTexture, double rate);
+    void drawGuns(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
+    void drawLocks(SDL_Renderer* &gRenderer, gameTexture* &gTexture, int i);
     // draw current money
     void drawMoney(SDL_Renderer* &gRenderer);
 
-
-    // control board texture
-    SDL_Texture* cTexture = NULL;
-    // pause button texture
-    SDL_Texture* pTexture = NULL;
-    // lock texture
-    SDL_Texture* lTexture = NULL;
-    // hp bar texture
-    SDL_Texture* hpbTexture = NULL;
-    // 6 gun textures
-    SDL_Texture* gunTextures[6];
-    // range circle texture
-    SDL_Texture* rTexture = NULL;
-    // money
-    SDL_Texture* mTexture = NULL;
-    // review board
-    SDL_Texture* rvTexture = NULL;
+    SDL_Rect dstrect_nb; // next button
+    SDL_Rect dstrect_l; // lock
+    SDL_Rect dstrect_rvb[6]; // review board
 
     SDL_Rect dstrect, dstrect_money;
 

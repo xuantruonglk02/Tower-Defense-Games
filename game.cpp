@@ -1,208 +1,16 @@
 #include "game.h"
 
-void Game::drawMap() {
-    map->drawToRender(gRenderer);
-}
-
-void Game::drawControlBoard() {
-    ctb->drawToRender(gRenderer, base->getHPRate());
-}
-
-void Game::drawBase() {
-    base->drawToRender(gRenderer);
-}
-
-void Game::drawEnemy() {
-    for (int i = 0; i < enemys.size(); i++) {
-        enemys[i]->drawToRender(gRenderer);
-        enemys[i]->updatePos(map->getDir(), map->getXRoad(), map->getYRoad());
-    }
-}
-
-void Game::drawGun() {
-    for (int i = 0; i < guns.size(); i++) {
-        guns[i]->drawToRender(gRenderer);
-    }
-    
-}
-
-void Game::drawSupporter() {
-    for (int i = 0; i < supporters.size(); i++) {
-        supporters[i]->drawToRenderer(gRenderer);
-    }
-}
-
-void Game::drawRange() {
-    for (int i = 0; i < guns.size(); i++) {
-        guns[i]->drawRangeCircle(gRenderer);
-    }
-    for (int i = 0; i < supporters.size(); i++) {
-        supporters[i]->drawRangeCircle(gRenderer);
-    }
-}
-
-void Game::drawBullets() {
-    for (int i = 0; i < bullets.size(); i++) {
-        bullets[i]->drawToRender(gRenderer);
-    }
-}
-
-void Game::drawUpdateBoard() {
-    for (int i = 0; i < guns.size(); i++) {
-        guns[i]->drawUpdateBoard(gRenderer);
-    }
-}
-
-void Game::noticeWaveCurrent() {
-    //printf(" -wave %d\n", curWave+1);
-}
-
-void Game::waitingForNextWave() {
-    if (wave[curWave].timeStarted == false) {
-        wave[curWave].timeStarted = true;
-        timeID = SDL_GetTicks();
-        return;
-    } else {
-        if (SDL_GetTicks() - timeID >= waitTimeTransWave) {
-            wave[curWave].started = true;
-        }
-    }
-}
-
-void Game::callEnemy() {
-    if (wave[curWave].nextWave) {
-        if (enemys.size() != 0) return;
-        curWave++; return;
-    }
-    if (callingEnemy == false) {
-        callingEnemy = true;
-        timeID = SDL_GetTicks();
-        return;
-    } else {
-        if (SDL_GetTicks() - timeID >= waitTimeCallEnemy) {
-            enemys.push_back(new Enemy(gRenderer, map->getYFirst()*50+25 + PLAY_ZONE_Y, wave[curWave].nextEnemy()));
-            timeID = SDL_GetTicks();
-        }
-    }
-}
-
-void Game::addGun(double x, double y, int type) {
-    treatPosition(x, y, row, col);
-    if (gunObject[row * 15 + col] != nullptr) return;
-    gunObject[row * 15 + col] = new Gun(gRenderer, x, y, type);
-    guns.push_back(gunObject[row * 15 + col]);
-
-}
-
-void Game::addSupporter(double x, double y, int type) {
-    treatPosition(x, y, row, col);
-    if (supporterObject[row * 15 + col] != nullptr) return;
-    supporterObject[row * 15 + col] = new Supporter(gRenderer, x, y, type);
-    supporters.push_back(supporterObject[row * 15 + col]);
-
-    buffForGun(supporters[supporters.size()-1]);
-}
-
-void Game::addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type) {
-    bullets.push_back(new Bullet(gRenderer, gX, gY, _enemy, dmg, type));
-}
-
-void Game::buffForGun(Supporter* pSupporter) {
-    for (int i = 0; i < guns.size(); i++)
-        if (pSupporter->inRange(guns[i]->getX(), guns[i]->getY())) guns[i]->setBuff(pSupporter->getType(), pSupporter->getBuff());
-}
-
-void Game::freeFire() {
-    for (int i = 0; i < guns.size(); i++) {
-        for (int j = 0; j < enemys.size(); j++) {
-            if (enemys[j]->getX() + ENEMY_SIZE/2 >= PLAY_ZONE_X)
-            if (guns[i]->onShot(enemys[j]->getX(), enemys[j]->getY())) {
-                guns[i]->changeShotDirection(enemys[j]->getX(), enemys[j]->getY());
-                if (SDL_GetTicks() - guns[i]->getTimeID() >= guns[i]->getShotDelayTime()) {
-                    addBullet(guns[i]->getX(), guns[i]->getY(), enemys[j], guns[i]->getDamage(), guns[i]->getType());
-                    guns[i]->setTimeID();
-                    guns[i]->fire();
-                }
-                break;
-            }
-        }
-    }
-}
-
-void Game::resetUpdateDisplay(Gun* pGun, Supporter* pSupporter) {
-    for (int i = 0; i < guns.size(); i++)
-        if (guns[i] != pGun) guns[i]->unenableUpdate();
-    for (int i = 0; i < supporters.size(); i++)
-        if (supporters[i] != pSupporter) supporters[i]->unenableUpdate();
-}
-
-void Game::treatWhenEnemyGetHit() {
-    for (int i = bullets.size()-1; i >= 0; i--) {
-        for (int j = enemys.size()-1; j >= 0; j--) {
-            // rocket not boom if doesn't meet target
-            if (bullets[i]->getType() == 3 && bullets[i]->getTarget() != enemys[j]) {
-                if (j == 0) bullets[i]->targetKilled();
-                continue;
-            }
-
-            if ((bullets[i]->getType() == 2 && enemys[j]->getHit(bullets[i]->getLastX(), bullets[i]->getLastY(), bullets[i]->getDamage(), bullets[i]->getType()))
-                || (bullets[i]->getType() != 2 && enemys[j]->getHit(bullets[i]->getX(), bullets[i]->getY(), bullets[i]->getDamage(), bullets[i]->getType()))) {
-                
-                if (bullets[i]->getType() == 3) treatWhenRocketBoom(bullets[i]);
-                if (enemys[j]->isDead()) bullets[i]->targetKilled();
-                delete bullets[i];
-                bullets.erase(bullets.begin() + i);
-                break;
-            }
-        }
-        
-    }
-}
-
-void Game::treatWhenRocketBoom(Bullet* rocket) {
-    for (int i = 0; i < enemys.size(); i++) {
-        enemys[i]->getBoom(rocket->getX(), rocket->getY(), rocket->getDamage());
-    }
-}
-
-void Game::remoteEnemyDied() {
-    for (int i = enemys.size()-1; i >= 0; i--) {
-        if (enemys[i]->isDead()) {
-            ctb->setGem(enemys[i]->getPrize());
-            delete enemys[i];
-            enemys.erase(enemys.begin() + i);
-        }
-    }
-}
-
-void Game::removeBulletOutScreen() {
-    for (int i = bullets.size()-1; i >= 0; i--) {
-        if (bullets[i]->outOfScreen()) {
-            delete bullets[i];
-            bullets.erase(bullets.begin() + i);
-        }
-    }
-}
-
-void Game::removeEnemyFinished() {
-    for (int i = enemys.size()-1; i >= 0; i--) {
-        if (enemys[i]->isSuccess()) {
-            base->setHP(enemys[i]->getDam());
-            sound->playEffectSoundWhenGetHurt();
-            delete enemys[i];
-            enemys.erase(enemys.begin() + i);
-        }
-    }
-}
-
 void Game::start() {
     initSDL(gWindow, gRenderer);
-    menu = new Menu(gRenderer);
+
+    gTexture = new gameTexture(gRenderer);
+
+    menu = new Menu();
     sound = new Sound();
-    //sound->playMusic();
+    sound->playMusic();
 
     while (true) {
-        menu->drawMenu(gRenderer);
+        menu->drawMenu(gRenderer, gTexture);
         SDL_RenderPresent(gRenderer);
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
@@ -212,7 +20,7 @@ void Game::start() {
                         play();
                         break;
                     case 2:
-                        menu->optionsMenu(gRenderer, sound);
+                        menu->optionsMenu(gRenderer, gTexture, sound);
                         break;
                     case 3:
                         quitGame();
@@ -224,56 +32,52 @@ void Game::start() {
 }
 
 void Game::setUp() {
-    ctb = new ctBoard(gRenderer);
-    map = new Map(gRenderer);
+    ctb = new ctBoard();
 
+    map = new Map();
     map->readFromFile(quit);
-
-    for (int i = 0; i < 150; i++) mapOfObject[i] = -2;
+    for (int i = 0; i < MAP_SIZE; i++) mapOfObject[i] = -2;
     map->buildMapOfObject(mapOfObject);
 
-    base = new Base(gRenderer, map->getYLast());
+    base = new Base(map->getYLast());
 
     readWaveData(wave, quit);
 
-    for (int i = 0; i < 150; i++) {gunObject[i] = NULL; supporterObject[i] = NULL;}
+    timeWriter = new Writer("fonts/comicbd.ttf", 20, 243, 156, 18);
+    waveWriter = new Writer("fonts/ALGER.ttf", 35, 0, 0, 0);
 
-    curWave = 0;
+    for (int i = 0; i < MAP_SIZE; i++) {gunObject[i] = NULL; supporterObject[i] = NULL;}
 
-    waitTimeTransWave = 7000;
+    curWave = 0; noticeWave = 0;
+
+    waitTimeTransWave = WAITING_WAVE_TIME_DEFAULT;
     waitTimeCallEnemy = 700;
 
     callingEnemy = false;
+    callNextWave = false;
+    
     pause = false;
     win = false;
     quit = false;
-
-    SDL_SetRenderDrawColor(gRenderer, 255, 0, 0, 255);
-}
-
-void Game::renderCurrent() {
-    drawMap();
-    drawBase();
-    noticeWaveCurrent();
-    drawEnemy();
-    drawGun();
-    drawSupporter();
-    drawRange();
-    drawBullets();
-    drawControlBoard();
-    drawUpdateBoard();
-
-    if (dragging) {
-        if (ctb->getGemOfItemChosen() <= ctb->getGem()) {
-            ctb->drawGunChosen(gRenderer, e.motion.x, e.motion.y);
-        }
-    }
+    
 }
 
 void Game::play() {
     setUp();
 
     while (!quit) {
+        
+        if (curWave == wave.size() - 1 && wave[curWave].nextWave) {
+            if (enemys.size() == 0) {
+                win = true;
+                break;
+            }
+        }
+        if (base->destroyed()) {
+            win = false;
+            break;
+        }
+
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
                 quit = true;
@@ -294,30 +98,44 @@ void Game::play() {
                         timeID += ctb->getTimePause();
                     }
 
-                if (ctb->aGunItemIsChosen(clickX, clickY)) {
-                    dragging = true;
-                    resetUpdateDisplay(NULL, NULL);
-                }
+                if (!pause) {
+                    if (ctb->aTowerIsChosen(clickX, clickY)) {
+                        dragging = true;
+                        resetUpdateDisplay(NULL, NULL);
+                    }
 
-                treatPosition(clickX, clickY, row, col);
-                if (row > -1 && col > -1) {
-                    if (gunObject[row * 15 + col] != nullptr) {
-                        if (gunObject[row * 15 + col]->clickOn()) {  
-                            resetUpdateDisplay(gunObject[row * 15 + col], NULL);
-                            readyForUpdate = true;
-                            indexOfGunObject = row * 15 + col;
-                        } else {
-                            readyForUpdate = false;
+                    if (ctb->clickNextButton(clickX, clickY)) {
+                        if (curWave != wave.size() && !wave[curWave].started) {
+                            callNextWave = true;
+                            waitTimeTransWave = 0;
                         }
-                    } else if (supporterObject[row * 15 + col] != nullptr) {
-                        if (supporterObject[row * 15 + col]->clickOn()) {
-                            resetUpdateDisplay(NULL, supporterObject[row * 15 + col]);
-                        }
-                    } else resetUpdateDisplay(NULL, NULL);
+                    }
+
+                    treatPosition(clickX, clickY, row, col);
+                    if (row > -1 && col > -1) {
+                        if (gunObject[row * 15 + col] != nullptr) {
+                            if (gunObject[row * 15 + col]->clickOn()) {
+                                resetUpdateDisplay(gunObject[row * 15 + col], NULL);
+                                readyForUpdate = true;
+                                indexOfObject = row * 15 + col;
+                            } else {
+                                readyForUpdate = false;
+                            }
+                        } else if (supporterObject[row * 15 + col] != nullptr) {
+                            if (supporterObject[row * 15 + col]->clickOn()) {
+                                resetUpdateDisplay(NULL, supporterObject[row * 15 + col]);
+                                readyForUpdate = true;
+                                indexOfObject = row * 15 + col;
+                            } else {
+                                readyForUpdate = false;
+                            }
+                        } else resetUpdateDisplay(NULL, NULL);
+                    }
                 }
 
                 if (readyForUpdate) {
-                    ctb->setGem(-(gunObject[indexOfGunObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
+                    if (gunObject[indexOfObject] != nullptr)
+                        ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
                 }
             }
 
@@ -334,40 +152,39 @@ void Game::play() {
                                 addGun(mouseX, mouseY, ctb->getTypeOfGunChosen());
                             else
                                 addSupporter(mouseX, mouseY, ctb->getTypeOfGunChosen() - 4);
+
                             mapOfObject[row * 15 + col] = ctb->getTypeOfGunChosen();
                             ctb->setGem(-ctb->getGemOfItemChosen());
+
+                            readyForUpdate = true;
+                            indexOfObject = row * 15 + col;
                         }
                     }
                 }
             }
         }
+        
 
         if (pause) continue;
 
-        if (curWave == wave.size()) {
-            win = true;
-            break;
-        } else {
-            if (wave[curWave].started == false) waitingForNextWave();
-            if (wave[curWave].started == true) callEnemy();
-        }
+        if ((enemys.size() == 0 || callNextWave) && !wave[curWave].started) waitingForNextWave();
+
+        if (wave[curWave].started) callEnemy();
+
+        //sortEnemyList();
 
         freeFire();
 
         renderCurrent();
+        
 
         treatWhenEnemyGetHit();
-
         remoteEnemyDied();
         removeBulletOutScreen();
         removeEnemyFinished();
 
-        if (base->destroyed()) {
-            quit = true;
-            win = false;
-        }
-
         SDL_RenderPresent(gRenderer);
+        
     }
 
     endGame();
@@ -377,9 +194,9 @@ void Game::endGame() {
 
     SDL_Texture* endScreenTexture = NULL;
     if (win) {
-        endScreenTexture = loadTexture(gRenderer, "images/win.png");
+        loadTexture(gRenderer, endScreenTexture, "images/win.png");
     } else {
-        endScreenTexture = loadTexture(gRenderer, "images/lose.png");
+        loadTexture(gRenderer, endScreenTexture, "images/lose.png");
     }
 
     SDL_Rect r;
@@ -409,9 +226,13 @@ void Game::clearGame() {
     delete ctb;
     delete map;
     delete base;
+    delete timeWriter;
+    delete waveWriter;
     ctb = NULL;
     map = NULL;
     base = NULL;
+    timeWriter = NULL;
+    waveWriter = NULL;
     wave.clear();
     enemys.clear();
     bullets.clear();
@@ -419,18 +240,311 @@ void Game::clearGame() {
         delete guns[i];
         guns[i] = NULL;
     }
-    guns.clear();
     for (int i = 0; i < supporters.size(); i++) {
         delete supporters[i];
         supporters[i] = NULL;
     }
+    for (int i = 0; i < enemys.size(); i++) {
+        delete enemys[i];
+        enemys[i] = NULL;
+    }
+    for (int i = 0; i < bullets.size(); i++) {
+        delete bullets[i];
+        bullets[i] = NULL;
+    }
+    guns.clear();
     supporters.clear();
+    enemys.clear();
+    bullets.clear();
 }
 
 void Game::quitGame() {
+    delete gTexture;
     delete sound;
     delete menu;
+    gTexture = NULL;
     sound = NULL;
     menu = NULL;
     quitSDL(gWindow, gRenderer);
+}
+
+void Game::addGun(double x, double y, int type) {
+    treatPosition(x, y, row, col);
+    if (gunObject[row * 15 + col] != nullptr) return;
+    gunObject[row * 15 + col] = new Gun(x, y, type);
+    guns.push_back(gunObject[row * 15 + col]);
+
+}
+
+void Game::addSupporter(double x, double y, int type) {
+    treatPosition(x, y, row, col);
+    if (supporterObject[row * 15 + col] != nullptr) return;
+    supporterObject[row * 15 + col] = new Supporter(x, y, type);
+    supporters.push_back(supporterObject[row * 15 + col]);
+
+    buffForGun(supporters[supporters.size()-1]);
+}
+
+void Game::addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type) {
+    bullets.push_back(new Bullet(gX, gY, _enemy, dmg, type));
+}
+
+void Game::buffForGun(Supporter* &pSupporter) {
+    for (int i = 0; i < guns.size(); i++)
+        if (pSupporter->inRange(guns[i]->getX(), guns[i]->getY())) guns[i]->setBuff(pSupporter->getType(), pSupporter->getBuff());
+}
+
+void Game::waitingForNextWave() {
+    if (wave[curWave].timeStarted == false) {
+        noticeWave++;
+        wave[curWave].timeStarted = true;
+        timeID = SDL_GetTicks();
+        return;
+    } else {
+        if (SDL_GetTicks() - timeID >= waitTimeTransWave) {
+            wave[curWave].started = true;
+        }
+    }
+
+    waitTimeTransWave = WAITING_WAVE_TIME_DEFAULT;
+    callNextWave = false;
+}
+
+void Game::callEnemy() {
+    if (wave[curWave].nextWave) {
+        curWave++; return;
+    }
+    if (callingEnemy == false) {
+        callingEnemy = true;
+        timeID = SDL_GetTicks();
+        return;
+    } else {
+        if (SDL_GetTicks() - timeID >= waitTimeCallEnemy) {
+            enemys.push_back(new Enemy(map->getYFirst()*50+25 + PLAY_ZONE_Y, wave[curWave].nextEnemy()));
+            timeID = SDL_GetTicks();
+        }
+    }
+}
+
+void Game::sortEnemyList() {
+    for (int i = 0; i < enemys.size()-1; i++) {
+        for (int j = i+1; j < enemys.size(); j++) {
+            if (i == j) break;
+            int iPos = enemys[i]->getCurrentPos();
+            int jPos = enemys[j]->getCurrentPos();
+            if (iPos < jPos) eSwap(enemys[i], enemys[j]);
+            else if (iPos == jPos) {
+                int d = map->getDir(iPos);
+                switch (d) {
+                    case 0:
+                        if (enemys[i]->getY() > enemys[j]->getY()) eSwap(enemys[i], enemys[j]);
+                        break;
+                    case 1:
+                        if (enemys[i]->getX() < enemys[j]->getX()) eSwap(enemys[i], enemys[j]);
+                        break;
+                    case 2:
+                        if (enemys[i]->getY() < enemys[j]->getY()) eSwap(enemys[i], enemys[j]);
+                        break;
+                    case 3:
+                        if (enemys[i]->getX() > enemys[j]->getX()) eSwap(enemys[i], enemys[j]);
+                        break;
+                }
+            }
+        }
+    }
+}
+
+void Game::eSwap(Enemy* &e1, Enemy* &e2) {
+    Enemy* e = e1; e1 = e2; e2 = e;
+}
+
+void Game::freeFire() {
+    for (int i = 0; i < guns.size(); i++) {
+        for (int j = 0; j < enemys.size(); j++) {
+            if (enemys[j]->getX() + ENEMY_SIZE/2 >= PLAY_ZONE_X)
+            if (guns[i]->onShot(enemys[j]->getX(), enemys[j]->getY())) {
+                guns[i]->changeShotDirection(enemys[j]->getX(), enemys[j]->getY());
+                if (SDL_GetTicks() - guns[i]->getTimeID() >= guns[i]->getShotDelayTime()) {
+                    addBullet(guns[i]->getX(), guns[i]->getY(), enemys[j], guns[i]->getDamage(), guns[i]->getType());
+                    guns[i]->setTimeID();
+                    guns[i]->fire();
+                }
+                break;
+            }
+        }
+    }
+}
+
+void Game::treatWhenEnemyGetHit() {
+    for (int i = bullets.size()-1; i >= 0; i--) {
+        for (int j = enemys.size()-1; j >= 0; j--) {
+            // rocket not boom if doesn't meet target
+            if (bullets[i]->getType() == 3 && bullets[i]->getTarget() != enemys[j]) {
+                if (j == 0) {
+                    //bullets[i]->targetKilled();
+                    bullets[i]->findNewTarget(enemys);
+                }
+                continue;
+            }
+
+            if ((bullets[i]->getType() == 2 && enemys[j]->getHit(bullets[i]->getLastX(), bullets[i]->getLastY(), bullets[i]->getDamage(), bullets[i]->getType()))
+                || (bullets[i]->getType() != 2 && enemys[j]->getHit(bullets[i]->getX(), bullets[i]->getY(), bullets[i]->getDamage(), bullets[i]->getType()))) {
+
+                if (bullets[i]->getType() == 3) treatWhenRocketBoom(bullets[i]);
+                //if (enemys[j]->isDead()) bullets[i]->targetKilled();
+                delete bullets[i];
+                bullets.erase(bullets.begin() + i);
+                break;
+            }
+        }
+
+    }
+}
+
+void Game::treatWhenRocketBoom(Bullet* &rocket) {
+    for (int i = 0; i < enemys.size(); i++) {
+        enemys[i]->getBoom(rocket->getX(), rocket->getY(), rocket->getDamage());
+    }
+}
+
+void Game::remoteEnemyDied() {
+    for (int i = enemys.size()-1; i >= 0; i--) {
+        if (enemys[i]->isDead()) {
+            ctb->setGem(enemys[i]->getPrize());
+            delete enemys[i];
+            enemys.erase(enemys.begin() + i);
+        }
+    }
+}
+
+void Game::removeEnemyFinished() {
+    for (int i = enemys.size()-1; i >= 0; i--) {
+        if (enemys[i]->isSuccess()) {
+            base->setHP(enemys[i]->getDamage());
+            sound->playEffectSoundWhenGetHurt();
+            delete enemys[i];
+            enemys.erase(enemys.begin() + i);
+        }
+    }
+}
+
+void Game::removeBulletOutScreen() {
+    for (int i = bullets.size()-1; i >= 0; i--) {
+        if (bullets[i]->outOfScreen()) {
+            delete bullets[i];
+            bullets.erase(bullets.begin() + i);
+        }
+    }
+}
+
+void Game::resetUpdateDisplay(Gun* const &pGun, Supporter* const &pSupporter) {
+    for (int i = 0; i < guns.size(); i++)
+        if (guns[i] != pGun) guns[i]->unenableUpdate();
+    for (int i = 0; i < supporters.size(); i++)
+        if (supporters[i] != pSupporter) supporters[i]->unenableUpdate();
+}
+
+void Game::renderCurrent() {
+    drawMap();
+    drawBase();
+
+    drawEnemy();
+    drawGun();
+    drawSupporter();
+    drawRange();
+    drawBullets();
+
+    drawControlBoard();
+    drawUpdateBoard();
+
+    if (dragging) {
+        if (ctb->getGemOfItemChosen() <= ctb->getGem()) {
+            ctb->drawTowerChosen(gRenderer, gTexture, e.motion.x, e.motion.y);
+        }
+    } else {
+        ctb->drawReviewBoard(gRenderer, gTexture, e.motion.x, e.motion.y);
+    }
+    
+    noticeWaveCurrent(noticeWave);
+    showWaitTime();
+}
+
+void Game::drawMap() {
+    map->drawToRender(gRenderer, gTexture);
+}
+
+void Game::drawControlBoard() {
+    ctb->drawToRender(gRenderer, gTexture, base->getHPRate());
+
+    if (curWave != wave.size() && !wave[curWave].started)
+        ctb->drawNextButton(gRenderer, gTexture, 1);
+    else ctb->drawNextButton(gRenderer, gTexture, 0);
+}
+
+void Game::drawBase() {
+    base->drawToRender(gRenderer, gTexture);
+}
+
+void Game::drawEnemy() {
+    for (int i = 0; i < enemys.size(); i++) {
+        enemys[i]->drawToRender(gRenderer, gTexture);
+        enemys[i]->updatePos(map->getDir(), map->getXRoad(), map->getYRoad());
+    }
+}
+
+void Game::drawGun() {
+    for (int i = 0; i < guns.size(); i++) {
+        guns[i]->drawToRender(gRenderer, gTexture);
+    }
+}
+
+void Game::drawSupporter() {
+    for (int i = 0; i < supporters.size(); i++) {
+        supporters[i]->drawToRenderer(gRenderer, gTexture);
+    }
+}
+
+void Game::drawRange() {
+    for (int i = 0; i < guns.size(); i++) {
+        guns[i]->drawRangeCircle(gRenderer, gTexture);
+    }
+    for (int i = 0; i < supporters.size(); i++) {
+        supporters[i]->drawRangeCircle(gRenderer, gTexture);
+    }
+}
+
+void Game::drawBullets() {
+    for (int i = 0; i < bullets.size(); i++) {
+        bullets[i]->drawToRender(gRenderer, gTexture);
+    }
+}
+
+void Game::drawUpdateBoard() {
+    for (int i = 0; i < guns.size(); i++) {
+        guns[i]->drawUpdateBoard(gRenderer, gTexture);
+    }
+}
+
+void Game::noticeWaveCurrent(int w) {
+    waveWriter->writeText(gRenderer, "Wave " + to_string(w), -1, 100);
+}
+
+void Game::showWaitTime() {
+    if (enemys.size() == 0 && !wave[curWave].started) {
+        int remainingTime;
+
+        if (waitTimeTransWave == 0) remainingTime = 0;
+        else remainingTime = waitTimeTransWave - SDL_GetTicks() + timeID;
+
+        if (remainingTime / 1000 > 3) timeWriter->setColorText(0, 0, 0);
+        else timeWriter->setColorText(255, 0, 0);
+
+        if ((remainingTime >= 3500)
+            || (remainingTime < 3000 && remainingTime >= 2500)
+            || (remainingTime < 2000 && remainingTime >= 1750)
+            || (remainingTime < 1500 && remainingTime >= 1250)
+            || (remainingTime < 1000 && remainingTime >= 750)
+            || (remainingTime < 500 && remainingTime >= 250))
+        timeWriter->writeText(gRenderer, "time: " + to_string(remainingTime / 1000), 100, 100);
+    }
 }

@@ -14,8 +14,8 @@ public:
     void playMusic();
     void playEffectSoundWhenGetHurt();
 
-    void musicInOptions();
-    void soundEffectInOptions();
+    void clickOnMusicItem();
+    void clickOnSoundItem();
 
 private:
     // background music
@@ -23,5 +23,5 @@ private:
     // sound effect
     Mix_Chunk* getHurtEffectSound = NULL; 
 
-    bool soundEffectOff;   
+    bool musicPlaying, soundPlaying;
 };
