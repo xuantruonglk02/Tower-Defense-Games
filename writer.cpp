@@ -28,6 +28,7 @@ void Writer::writeText(SDL_Renderer* &gRenderer, string text, int _x, int _y) {
     else dstrect.x = _x;
     dstrect.y = _y;
     SDL_RenderCopy(gRenderer, textTexture, NULL, &dstrect);
+    SDL_DestroyTexture(textTexture);
 }
 
 void Writer::loadTextTexture(SDL_Renderer* &gRenderer, string text) {

@@ -55,28 +55,18 @@ void Game::setUp() {
 
     callingEnemy = false;
     callNextWave = false;
-    
+
     pause = false;
     win = false;
     quit = false;
-    
+
 }
 
 void Game::play() {
     setUp();
 
     while (!quit) {
-        
-        if (curWave == wave.size() - 1 && wave[curWave].nextWave) {
-            if (enemys.size() == 0) {
-                win = true;
-                break;
-            }
-        }
-        if (base->destroyed()) {
-            win = false;
-            break;
-        }
+        printf(" current wave %d  notice wave %d\n", curWave, noticeWave);
 
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -99,16 +89,16 @@ void Game::play() {
                     }
 
                 if (!pause) {
-                    if (ctb->aTowerIsChosen(clickX, clickY)) {
-                        dragging = true;
-                        resetUpdateDisplay(NULL, NULL);
-                    }
-
                     if (ctb->clickNextButton(clickX, clickY)) {
                         if (curWave != wave.size() && !wave[curWave].started) {
                             callNextWave = true;
                             waitTimeTransWave = 0;
                         }
+                    }
+
+                    if (ctb->aTowerIsChosen(clickX, clickY)) {
+                        dragging = true;
+                        resetUpdateDisplay(NULL, NULL);
                     }
 
                     treatPosition(clickX, clickY, row, col);
@@ -122,20 +112,15 @@ void Game::play() {
                                 readyForUpdate = false;
                             }
                         } else if (supporterObject[row * 15 + col] != nullptr) {
-                            if (supporterObject[row * 15 + col]->clickOn()) {
+                            if (supporterObject[row * 15 + col]->clickOn())
                                 resetUpdateDisplay(NULL, supporterObject[row * 15 + col]);
-                                readyForUpdate = true;
-                                indexOfObject = row * 15 + col;
-                            } else {
-                                readyForUpdate = false;
-                            }
                         } else resetUpdateDisplay(NULL, NULL);
                     }
-                }
 
-                if (readyForUpdate) {
-                    if (gunObject[indexOfObject] != nullptr)
-                        ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
+                    if (readyForUpdate) {
+                        if (gunObject[indexOfObject] != nullptr)
+                            ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
+                    }
                 }
             }
 
@@ -163,7 +148,7 @@ void Game::play() {
                 }
             }
         }
-        
+
 
         if (pause) continue;
 
@@ -176,7 +161,17 @@ void Game::play() {
         freeFire();
 
         renderCurrent();
-        
+
+        if (curWave == wave.size() && enemys.size() == 0) {
+                win = true;
+                break;
+        }
+        if (base->destroyed()) {
+            win = false;
+            break;
+        }
+
+        noticeWaveCurrent();
 
         treatWhenEnemyGetHit();
         remoteEnemyDied();
@@ -184,7 +179,7 @@ void Game::play() {
         removeEnemyFinished();
 
         SDL_RenderPresent(gRenderer);
-        
+
     }
 
     endGame();
@@ -220,6 +215,7 @@ void Game::clearGame() {
     readyForUpdate = false;
     dragging = false;
     callingEnemy = false;
+    callNextWave = false;
     win = false;
     pause = false;
     quit = false;
@@ -233,9 +229,6 @@ void Game::clearGame() {
     base = NULL;
     timeWriter = NULL;
     waveWriter = NULL;
-    wave.clear();
-    enemys.clear();
-    bullets.clear();
     for (int i = 0; i < guns.size(); i++) {
         delete guns[i];
         guns[i] = NULL;
@@ -252,10 +245,11 @@ void Game::clearGame() {
         delete bullets[i];
         bullets[i] = NULL;
     }
-    guns.clear();
-    supporters.clear();
+    wave.clear();
     enemys.clear();
     bullets.clear();
+    guns.clear();
+    supporters.clear();
 }
 
 void Game::quitGame() {
@@ -274,6 +268,7 @@ void Game::addGun(double x, double y, int type) {
     gunObject[row * 15 + col] = new Gun(x, y, type);
     guns.push_back(gunObject[row * 15 + col]);
 
+    gunGetBuff(guns[guns.size()-1]);
 }
 
 void Game::addSupporter(double x, double y, int type) {
@@ -292,6 +287,11 @@ void Game::addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type) {
 void Game::buffForGun(Supporter* &pSupporter) {
     for (int i = 0; i < guns.size(); i++)
         if (pSupporter->inRange(guns[i]->getX(), guns[i]->getY())) guns[i]->setBuff(pSupporter->getType(), pSupporter->getBuff());
+}
+
+void Game::gunGetBuff(Gun* &pGun) {
+    for (int i = 0; i < supporters.size(); i++)
+        if (supporters[i]->inRange(pGun->getX(), pGun->getY())) pGun->setBuff(supporters[i]->getType(), supporters[i]->getBuff());
 }
 
 void Game::waitingForNextWave() {
@@ -464,8 +464,7 @@ void Game::renderCurrent() {
     } else {
         ctb->drawReviewBoard(gRenderer, gTexture, e.motion.x, e.motion.y);
     }
-    
-    noticeWaveCurrent(noticeWave);
+
     showWaitTime();
 }
 
@@ -525,8 +524,8 @@ void Game::drawUpdateBoard() {
     }
 }
 
-void Game::noticeWaveCurrent(int w) {
-    waveWriter->writeText(gRenderer, "Wave " + to_string(w), -1, 100);
+void Game::noticeWaveCurrent() {
+    waveWriter->writeText(gRenderer, "Wave " + to_string(noticeWave) + "/" + to_string(wave.size()), -1, 100);
 }
 
 void Game::showWaitTime() {

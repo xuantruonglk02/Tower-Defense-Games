@@ -42,6 +42,7 @@ public:
     void addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type);
     
     void buffForGun(Supporter* &pSupporter);
+    void gunGetBuff(Gun* &pGun);
     
     void waitingForNextWave();
     
@@ -73,7 +74,7 @@ public:
     void drawBullets();
     void drawUpdateBoard();
 
-    void noticeWaveCurrent(int w);
+    void noticeWaveCurrent();
     void showWaitTime();
 
 private:

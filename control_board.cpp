@@ -105,7 +105,7 @@ void ctBoard::drawReviewBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture, 
     for (int i = 0; i < 6; i++)
         if (sqrt((x - gunItemXPos[i])*(x - gunItemXPos[i]) + (y - gunItemYPos[i])*(y - gunItemYPos[i])) <= GUN_BASE_SIZE/2) {
             dstrect_rvb[i].x = x;
-            dstrect_rvb[i].y = y;            
+            dstrect_rvb[i].y = y;
             SDL_RenderCopy(gRenderer, gTexture->reviewBoardTexture[i], NULL, &dstrect_rvb[i]);
             break;
         }
@@ -158,7 +158,6 @@ bool ctBoard::aTowerIsChosen(int x, int y) {
             return true;
         }
     }
-    printf(" %d\n", gunItemChosen);
     return false;
 }
 
