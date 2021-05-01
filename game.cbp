@@ -56,7 +56,6 @@
 		<Unit filename="texture.h" />
 		<Unit filename="utils.cpp" />
 		<Unit filename="utils.h" />
-		<Unit filename="wave.cpp" />
 		<Unit filename="wave.h" />
 		<Unit filename="writer.cpp" />
 		<Unit filename="writer.h" />

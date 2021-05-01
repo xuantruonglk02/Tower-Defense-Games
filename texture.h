@@ -12,12 +12,14 @@ public:
         loadTexture(gRenderer, menuTexture, MENU_PATH);
         loadTexture(gRenderer, optionsMenuTexture, O_MENU_PATH);
         loadTexture(gRenderer, playButtonTexture, PLAY_PATH);
+        loadTexture(gRenderer, resumeButtonTexture, RESUME_PATH);
         loadTexture(gRenderer, optionsButtonTexture, OPTIONS_PATH);
         loadTexture(gRenderer, quitButtonTexture, QUIT_PATH);
         loadTexture(gRenderer, muteTexture, MUTE_PATH);
         // control board
         loadTexture(gRenderer, controlBoardTexture, CTB_PATH);
         loadTexture(gRenderer, pauseButtonTexture, PAUSE_PATH);
+        loadTexture(gRenderer, pauseMenuTexture, PAUSE_MENU_PATH);
         loadTexture(gRenderer, hpBarTexture, HPBAR_PATH);
         loadTexture(gRenderer, rangeCircleTexture, SHOOTING_RANGE_CIRCLE_PATH);
         loadTexture(gRenderer, lockGunTexture, LOCK_PATH);
@@ -63,12 +65,14 @@ public:
         SDL_DestroyTexture(menuTexture);
         SDL_DestroyTexture(optionsMenuTexture);
         SDL_DestroyTexture(playButtonTexture);
+        SDL_DestroyTexture(resumeButtonTexture);
         SDL_DestroyTexture(optionsButtonTexture);
         SDL_DestroyTexture(quitButtonTexture);
         SDL_DestroyTexture(muteTexture);
         // control board
         SDL_DestroyTexture(controlBoardTexture);
         SDL_DestroyTexture(pauseButtonTexture);
+        SDL_DestroyTexture(pauseMenuTexture);
         SDL_DestroyTexture(hpBarTexture);
         SDL_DestroyTexture(rangeCircleTexture);
         SDL_DestroyTexture(lockGunTexture);
@@ -101,12 +105,14 @@ public:
     SDL_Texture* menuTexture = NULL;
     SDL_Texture* optionsMenuTexture = NULL;
     SDL_Texture* playButtonTexture = NULL;
+    SDL_Texture* resumeButtonTexture = NULL;
     SDL_Texture* optionsButtonTexture = NULL;
     SDL_Texture* quitButtonTexture = NULL;
     SDL_Texture* muteTexture = NULL;
     // control board
     SDL_Texture* controlBoardTexture = NULL;
     SDL_Texture* pauseButtonTexture = NULL;
+    SDL_Texture* pauseMenuTexture = NULL;
     SDL_Texture* hpBarTexture = NULL;
     SDL_Texture* rangeCircleTexture = NULL;
     SDL_Texture* lockGunTexture = NULL;

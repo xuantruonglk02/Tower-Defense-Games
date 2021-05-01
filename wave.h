@@ -1,11 +1,9 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
 #include <vector>
 
 using std::vector;
-using std::ifstream;
 
 struct Wave {
     bool started = false;
@@ -16,8 +14,21 @@ struct Wave {
     vector <int> enemyType;
     vector <int> amountOfEnemy;
 
-    int nextEnemy();
-        
-};
+    void setUpForResume() {
+        started = false;
+        timeStarted = false;
+        nextWave = false;
+        typeCalling = 0, called = 0;
+    } 
 
-void readWaveData(vector <Wave> &wave, bool &quit);
+    int nextEnemy() {
+        if (typeCalling == amountOfType-1 && called == amountOfEnemy[typeCalling] - 1) nextWave = true;
+        if (called == amountOfEnemy[typeCalling]) {
+            typeCalling++;
+            called = 0;
+        }
+        called++;
+        return enemyType[typeCalling];
+    }
+
+};

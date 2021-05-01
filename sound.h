@@ -17,6 +17,9 @@ public:
     void clickOnMusicItem();
     void clickOnSoundItem();
 
+    bool playingMusic();
+    bool playingSound();
+
 private:
     // background music
     Mix_Music* background_music = NULL;

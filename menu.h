@@ -15,24 +15,21 @@ public:
     Menu();
     ~Menu();
 
+    void setDstRectButton(bool resume);
+
     void drawMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
 
     int clickOn(int x, int y);
 
     void optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound);
-    void drawOptionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
+    void drawOptionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound);
 
 private:
-
-    SDL_Rect dstrect;
+    // button
+    SDL_Rect dstrect_p, dstrect_r, dstrect_o, dstrect_q;
     // options menu
     SDL_Rect dstrect_om;
-    // button
-    SDL_Rect dstrect_p, dstrect_o, dstrect_q;
-    // resume button
-    SDL_Rect dstrect_r;
     // mute icon
     SDL_Rect dstrect_m_m, dstrect_m_s;
 
-    bool musicPlaying, soundPlaying;
 };

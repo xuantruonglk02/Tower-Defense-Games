@@ -17,12 +17,18 @@ void Game::start() {
                 SDL_GetMouseState(&clickX, &clickY);
                 switch (menu->clickOn(clickX, clickY)) {
                     case 1:
+                        if (quit_and_resume) clearGame();
+                        setUp();
                         play();
                         break;
                     case 2:
-                        menu->optionsMenu(gRenderer, gTexture, sound);
+                        setUpGameForResume();
+                        play();
                         break;
                     case 3:
+                        menu->optionsMenu(gRenderer, gTexture, sound);
+                        break;
+                    case 4:
                         quitGame();
                         return;
                 }
@@ -41,10 +47,10 @@ void Game::setUp() {
 
     base = new Base(map->getYLast());
 
-    readWaveData(wave, quit);
+    readWaveData();
 
     timeWriter = new Writer("fonts/comicbd.ttf", 20, 243, 156, 18);
-    waveWriter = new Writer("fonts/ALGER.ttf", 35, 0, 0, 0);
+    waveWriter = new Writer("fonts/ALGER.ttf", 27, 0, 0, 0);
 
     for (int i = 0; i < MAP_SIZE; i++) {gunObject[i] = NULL; supporterObject[i] = NULL;}
 
@@ -56,17 +62,17 @@ void Game::setUp() {
     callingEnemy = false;
     callNextWave = false;
 
-    pause = false;
     win = false;
     quit = false;
+    quit_and_resume = false;
 
 }
 
 void Game::play() {
-    setUp();
 
     while (!quit) {
-        printf(" current wave %d  notice wave %d\n", curWave, noticeWave);
+
+        printf(" curwave %d  noticewave %d\n", curWave, noticeWave);
 
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -81,49 +87,49 @@ void Game::play() {
             if (e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT) {
                 SDL_GetMouseState(&clickX, &clickY);
 
-                if (ctb->clickPauseButton(clickX, clickY))
-                    if (!pause) pause = true;
-                    else {
-                        pause = false;
-                        timeID += ctb->getTimePause();
+                if (ctb->clickPauseButton(clickX, clickY)) {
+                    ctb->pauseMenu(gRenderer, gTexture, sound, quit_and_resume);
+                    if (quit_and_resume) {
+                        menu->setDstRectButton(true);
+                        return;
                     }
+                    timeID += ctb->getTimePause();
+                }
 
-                if (!pause) {
-                    if (ctb->clickNextButton(clickX, clickY)) {
-                        if (curWave != wave.size() && !wave[curWave].started) {
-                            callNextWave = true;
-                            waitTimeTransWave = 0;
-                        }
-                    }
-
-                    if (ctb->aTowerIsChosen(clickX, clickY)) {
-                        dragging = true;
-                        resetUpdateDisplay(NULL, NULL);
-                    }
-
-                    treatPosition(clickX, clickY, row, col);
-                    if (row > -1 && col > -1) {
-                        if (gunObject[row * 15 + col] != nullptr) {
-                            if (gunObject[row * 15 + col]->clickOn()) {
-                                resetUpdateDisplay(gunObject[row * 15 + col], NULL);
-                                readyForUpdate = true;
-                                indexOfObject = row * 15 + col;
-                            } else {
-                                readyForUpdate = false;
-                            }
-                        } else if (supporterObject[row * 15 + col] != nullptr) {
-                            if (supporterObject[row * 15 + col]->clickOn())
-                                resetUpdateDisplay(NULL, supporterObject[row * 15 + col]);
-                        } else resetUpdateDisplay(NULL, NULL);
-                    }
-
-                    if (readyForUpdate) {
-                        if (gunObject[indexOfObject] != nullptr)
-                            ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
+                if (ctb->clickNextButton(clickX, clickY)) {
+                    if (curWave != wave.size() && !wave[curWave].started) {
+                        callNextWave = true;
+                        waitTimeTransWave = 0;
                     }
                 }
-            }
 
+                if (ctb->aTowerIsChosen(clickX, clickY)) {
+                    dragging = true;
+                    resetUpdateDisplay(NULL, NULL);
+                }
+
+                treatPosition(clickX, clickY, row, col);
+                if (row > -1 && col > -1) {
+                    if (gunObject[row * 15 + col] != nullptr) {
+                        if (gunObject[row * 15 + col]->clickOn()) {
+                            resetUpdateDisplay(gunObject[row * 15 + col], NULL);
+                            readyForUpdate = true;
+                            indexOfObject = row * 15 + col;
+                        } else {
+                            readyForUpdate = false;
+                        }
+                    } else if (supporterObject[row * 15 + col] != nullptr) {
+                        if (supporterObject[row * 15 + col]->clickOn())
+                            resetUpdateDisplay(NULL, supporterObject[row * 15 + col]);
+                    } else resetUpdateDisplay(NULL, NULL);
+                }
+
+                if (readyForUpdate) {
+                    if (gunObject[indexOfObject] != nullptr)
+                        ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
+                }
+            }
+            
             if (e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_LEFT) {
                 // add gun when release left button
                 if (dragging) {
@@ -149,9 +155,6 @@ void Game::play() {
             }
         }
 
-
-        if (pause) continue;
-
         if ((enemys.size() == 0 || callNextWave) && !wave[curWave].started) waitingForNextWave();
 
         if (wave[curWave].started) callEnemy();
@@ -170,7 +173,6 @@ void Game::play() {
             win = false;
             break;
         }
-
         noticeWaveCurrent();
 
         treatWhenEnemyGetHit();
@@ -208,6 +210,7 @@ void Game::endGame() {
     endScreenTexture = NULL;
 
     clearGame();
+    menu->setDstRectButton(false);
 }
 
 void Game::clearGame() {
@@ -217,7 +220,6 @@ void Game::clearGame() {
     callingEnemy = false;
     callNextWave = false;
     win = false;
-    pause = false;
     quit = false;
     delete ctb;
     delete map;
@@ -260,6 +262,39 @@ void Game::quitGame() {
     sound = NULL;
     menu = NULL;
     quitSDL(gWindow, gRenderer);
+}
+
+void Game::readWaveData() {
+    ifstream finp("wave/map1.in");
+    if (finp.fail()) {printf(" -failed to open wave.in\n"); quit = true; return;}
+    int n_wave;
+    finp >> n_wave;
+    for (int i = 0; i < n_wave; i++) {
+        Wave re;
+        finp >> re.amountOfType;
+        for (int j = 0; j < re.amountOfType; j++) {
+            int a, b;
+            finp >> a >> b;
+            re.enemyType.push_back(a);
+            re.amountOfEnemy.push_back(b);
+        }
+        wave.push_back(re);
+    }
+    finp.close();
+}
+
+void Game::setUpGameForResume() {
+    for (int i = 0; i < enemys.size(); i++) delete enemys[i];
+    enemys.clear();
+
+    for (int i = 0; i < bullets.size(); i++) delete bullets[i];
+    bullets.clear();
+
+    wave[noticeWave-1].setUpForResume();
+
+    noticeWave = curWave;
+
+    quit_and_resume = false;
 }
 
 void Game::addGun(double x, double y, int type) {
@@ -544,6 +579,6 @@ void Game::showWaitTime() {
             || (remainingTime < 1500 && remainingTime >= 1250)
             || (remainingTime < 1000 && remainingTime >= 750)
             || (remainingTime < 500 && remainingTime >= 250))
-        timeWriter->writeText(gRenderer, "time: " + to_string(remainingTime / 1000), 100, 100);
+        timeWriter->writeText(gRenderer, "time: " + to_string(remainingTime / 1000), 50, 50);
     }
 }

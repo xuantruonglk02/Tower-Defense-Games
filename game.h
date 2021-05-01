@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -26,6 +27,7 @@
 
 using std::vector;
 using std::to_string;
+using std::ifstream;
 
 class Game {
 public:
@@ -36,6 +38,10 @@ public:
     // delete data game playing
     void clearGame();
     void quitGame();
+
+    void readWaveData();
+
+    void setUpGameForResume();
 
     void addGun(double x, double y, int type);
     void addSupporter(double x, double y, int type);
@@ -123,6 +129,6 @@ private:
     bool callingEnemy;
     bool callNextWave;
     bool win;
-    bool pause;
     bool quit;
+    bool quit_and_resume = false;
 };

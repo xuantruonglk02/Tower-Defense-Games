@@ -28,7 +28,6 @@ void Sound::loadMedia() {
     if (background_music == NULL) {
 		printf(" %s\n", Mix_GetError());
 	}
-
     // load effect sound for base when get hurt
     getHurtEffectSound = Mix_LoadWAV("sounds/oidoioi.mp3");
     if (getHurtEffectSound == NULL) {
@@ -38,6 +37,7 @@ void Sound::loadMedia() {
 
 void Sound::playMusic() {
     Mix_PlayMusic(background_music, -1);
+    musicPlaying = true;
 }
 
 void Sound::playEffectSoundWhenGetHurt() {
@@ -46,8 +46,14 @@ void Sound::playEffectSoundWhenGetHurt() {
 }
 
 void Sound::clickOnMusicItem() {
-    if (Mix_PlayingMusic() == 1) Mix_HaltMusic();
+    if (Mix_PlayingMusic() == 1) {
+        Mix_HaltMusic();
+        musicPlaying = false;
+    }
     else playMusic();
 }
 
 void Sound::clickOnSoundItem() {soundPlaying = !soundPlaying;}
+
+bool Sound::playingMusic() {return musicPlaying;}
+bool Sound::playingSound() {return soundPlaying;}

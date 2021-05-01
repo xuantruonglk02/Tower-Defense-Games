@@ -1,18 +1,7 @@
 #include "menu.h"
 
 Menu::Menu() {
-    dstrect_p.w = BUTTON_W; dstrect_p.h = BUTTON_H;
-    dstrect_p.x = SCREEN_WIDTH/2 - dstrect_p.w/2;
-
-    dstrect_o.w = BUTTON_W; dstrect_o.h = BUTTON_H;
-    dstrect_o.x = SCREEN_WIDTH/2 - dstrect_o.w/2;
-
-    dstrect_q.w = BUTTON_W; dstrect_q.h = BUTTON_H;
-    dstrect_q.x = SCREEN_WIDTH/2 - dstrect_q.w/2;
-
-    dstrect_p.y = (SCREEN_HEIGHT - dstrect_p.h - dstrect_o.h - dstrect_q.h - BUTTON_DISTANCE*2) / 2;
-    dstrect_o.y = dstrect_p.y + dstrect_p.h + BUTTON_DISTANCE;
-    dstrect_q.y = dstrect_o.y + dstrect_o.h + BUTTON_DISTANCE;
+    setDstRectButton(false);
 
     dstrect_om.w = OPTIONS_MENU_W; dstrect_om.h = OPTIONS_MENU_H;
     dstrect_om.x = SCREEN_WIDTH/2 - dstrect_om.w/2;
@@ -24,19 +13,42 @@ Menu::Menu() {
     dstrect_m_s.w = MUSIC_R * 2; dstrect_m_s.h = MUSIC_R * 2;
     dstrect_m_s.x = SOUND_X + dstrect_om.x - MUSIC_R; dstrect_m_s.y = SOUND_Y + dstrect_om.y - MUSIC_R;
 
-    musicPlaying = true;
-    soundPlaying = true;
 }
 
 Menu::~Menu() {}
 
+void Menu::setDstRectButton(bool resume) {
+    dstrect_p.w = BUTTON_W; dstrect_p.h = BUTTON_H;
+    dstrect_p.x = SCREEN_WIDTH/2 - dstrect_p.w/2;
+
+    dstrect_r.w = BUTTON_W; dstrect_r.h = BUTTON_H;
+    dstrect_r.x = SCREEN_WIDTH/2 - dstrect_r.w/2;
+
+    dstrect_o.w = BUTTON_W; dstrect_o.h = BUTTON_H;
+    dstrect_o.x = SCREEN_WIDTH/2 - dstrect_o.w/2;
+
+    dstrect_q.w = BUTTON_W; dstrect_q.h = BUTTON_H;
+    dstrect_q.x = SCREEN_WIDTH/2 - dstrect_q.w/2;
+
+    if (resume) {
+        dstrect_p.y = (SCREEN_HEIGHT - dstrect_p.h - dstrect_r.h - dstrect_o.h - dstrect_q.h - BUTTON_DISTANCE*3) / 2;
+        dstrect_r.y = dstrect_p.y + dstrect_p.h + BUTTON_DISTANCE;
+        dstrect_o.y = dstrect_r.y + dstrect_r.h + BUTTON_DISTANCE;
+        dstrect_q.y = dstrect_o.y + dstrect_o.h + BUTTON_DISTANCE;
+    } else {
+        dstrect_p.y = (SCREEN_HEIGHT - dstrect_p.h - dstrect_o.h - dstrect_q.h - BUTTON_DISTANCE*2) / 2;
+        dstrect_o.y = dstrect_p.y + dstrect_p.h + BUTTON_DISTANCE;
+        dstrect_q.y = dstrect_o.y + dstrect_o.h + BUTTON_DISTANCE;
+        dstrect_r.y = SCREEN_HEIGHT;
+    }
+}
+
 void Menu::drawMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     SDL_RenderCopy(gRenderer, gTexture->menuTexture, NULL, NULL);
-
     SDL_RenderCopy(gRenderer, gTexture->playButtonTexture, NULL, &dstrect_p);
+    SDL_RenderCopy(gRenderer, gTexture->resumeButtonTexture, NULL, &dstrect_r);
     SDL_RenderCopy(gRenderer, gTexture->optionsButtonTexture, NULL, &dstrect_o);
     SDL_RenderCopy(gRenderer, gTexture->quitButtonTexture, NULL, &dstrect_q);
-
 }
 
 void Menu::optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound) {
@@ -44,7 +56,7 @@ void Menu::optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* 
     // loop
     while (true) {
         // draw
-        drawOptionsMenu(gRenderer, gTexture);
+        drawOptionsMenu(gRenderer, gTexture, sound);
         SDL_RenderPresent(gRenderer);
         // read event
         while (SDL_PollEvent(&e)) {
@@ -55,12 +67,10 @@ void Menu::optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* 
                 // click on background music button
                 if (sqrt((clickX - dstrect_om.x - MUSIC_X)*(clickX - dstrect_om.x - MUSIC_X) + (clickY - dstrect_om.y - MUSIC_Y)*(clickY - dstrect_om.y - MUSIC_Y)) <= MUSIC_R) {
                     sound->clickOnMusicItem();
-                    musicPlaying = !musicPlaying;
                 }
                 // click on sound effect button
                 else if (sqrt((clickX - dstrect_om.x - SOUND_X)*(clickX - dstrect_om.x - SOUND_X) + (clickY - dstrect_om.y - SOUND_Y)*(clickY - dstrect_om.y - SOUND_Y)) <= MUSIC_R) {
                     sound->clickOnSoundItem();
-                    soundPlaying = !soundPlaying;
                 }
                 // click on back button
                 else if (clickX < dstrect_om.x || clickX > dstrect_om.x + dstrect_om.w || clickY < dstrect_om.y || clickY > dstrect_om.y + dstrect_om.h) {
@@ -71,18 +81,20 @@ void Menu::optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* 
     }
 }
 
-void Menu::drawOptionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+void Menu::drawOptionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound) {
     SDL_RenderCopy(gRenderer, gTexture->optionsMenuTexture, NULL, &dstrect_om);
 
-    if (!musicPlaying) SDL_RenderCopy(gRenderer, gTexture->muteTexture, NULL, &dstrect_m_m);
-    if (!soundPlaying) SDL_RenderCopy(gRenderer, gTexture->muteTexture, NULL, &dstrect_m_s);
+    if (!sound->playingMusic()) SDL_RenderCopy(gRenderer, gTexture->muteTexture, NULL, &dstrect_m_m);
+    if (!sound->playingSound()) SDL_RenderCopy(gRenderer, gTexture->muteTexture, NULL, &dstrect_m_s);
 }
 
 int Menu::clickOn(int x, int y) {
     // return 1 if click on play button
     if (x >= dstrect_p.x && x <= dstrect_p.x + dstrect_p.w && y >= dstrect_p.y && y <= dstrect_p.y + dstrect_p.h) return 1;
-    // 2 - options button
-    if (x >= dstrect_o.x && x <= dstrect_o.x + dstrect_o.w && y >= dstrect_o.y && y <= dstrect_o.y + dstrect_o.h) return 2;
-    // 3 - quit button
-    if (x >= dstrect_q.x && x <= dstrect_q.x + dstrect_q.w && y >= dstrect_q.y && y <= dstrect_q.y + dstrect_q.h) return 3;
+    // 2 - resume button
+    if (x >= dstrect_r.x && x <= dstrect_r.x + dstrect_r.w && y >= dstrect_r.y && y <= dstrect_r.y + dstrect_r.h) return 2;
+    // 3 - options button
+    if (x >= dstrect_o.x && x <= dstrect_o.x + dstrect_o.w && y >= dstrect_o.y && y <= dstrect_o.y + dstrect_o.h) return 3;
+    // 4 - quit button
+    if (x >= dstrect_q.x && x <= dstrect_q.x + dstrect_q.w && y >= dstrect_q.y && y <= dstrect_q.y + dstrect_q.h) return 4;
 }

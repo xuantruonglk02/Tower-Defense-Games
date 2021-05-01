@@ -1,4 +1,4 @@
-                #pragma once
+#pragma once
 
 #include <iostream>
 
@@ -10,16 +10,18 @@ const int PLAY_ZONE_Y = 100;
 const int PLAY_ZONE_W = 750;
 const int PLAY_ZONE_H = 500;
 
-const std::string WINDOW_TITLE = "GoodGame.com";
+const std::string WINDOW_TITLE = "Super Tower Defender";
 const std::string MENU_PATH = "images/menu.png";
 const std::string O_MENU_PATH = "images/options_menu.png";
 const std::string PLAY_PATH = "images/play.png";
+const std::string RESUME_PATH = "images/resume.png";
 const std::string OPTIONS_PATH = "images/options.png";
 const std::string QUIT_PATH = "images/quit.png";
 const std::string MUTE_PATH = "images/die.png";
 
 const std::string CTB_PATH = "images/control_board.png";
 const std::string PAUSE_PATH = "images/pause.png";
+const std::string PAUSE_MENU_PATH = "images/options_menu - Copy.png";
 const std::string HPBAR_PATH = "images/hp_bar.png";
 const std::string LOCK_PATH = "images/lock.png";
 const std::string NEXT_BUTTON_PATH[2] = {"images/next_button_down.png", "images/next_button_up.png"};
@@ -86,13 +88,14 @@ const int OPTIONS_MENU_W = 300, OPTIONS_MENU_H = 200;
 const int MUSIC_X = 100, MUSIC_Y = 100, MUSIC_R = 30;
 const int SOUND_X = 200, SOUND_Y = 100;
 
-const int REVIEW_BOARD_SIZE[6][2] = {{100, 100}, {200, 200}, {100, 200}, {200, 100}, {300, 300}, {150, 200}}; // w - h
+const int REVIEW_BOARD_SIZE[6][2] = {{100, 100}, {200, 200}, {100, 200}, {200, 100}, {300, 300}, {150, 200}}; 
 const int NEXT_BUTTON_W = 130, NEXT_BUTTON_H = 60;
 const int TOWER_BOARD_X = 3, TOWER_BOARD_Y = 206;
 const int UPDATE_BOARD_W = 130, UPDATE_BOARD_H = 214;
 const int DISTANCE = 10;
 const int LOCK_W = 27, LOCK_H = 40;
 const int WAITING_WAVE_TIME_DEFAULT = 16000;
+const int BACK_BUTTON_X = 90, BACK_BUTTON_Y = 140, BACK_BUTTON_W = 120, BACK_BUTTON_H = 40;
 
 const int MAP_ROW = 10;
 const int MAP_COL = 15;
@@ -110,12 +113,9 @@ const int GUN_H[4][2] = {{52, 73}, {52, 81}, {52, 52}, {30, 30}};
 const int SUP_SIZE[2] = {40, 54};
 
 const int ENEMY_SIZE = 21;
-const int E_HP[3] = {100, 300, 700};
-const int E_DAMAGE[3] = {10, 20, 30};
-const int E_PRIZE[3] = {1, 2, 3};
-const double E_SPEED[3] = {1, 2, 1};
 
 const int BULLET_SIZE = 8;
+
 const int DOUBLE_BULLET_W = 18;
 const int DOUBLE_BULLET_H = 8;
 const int ROCKET_W[2] = {24, 24};
@@ -129,18 +129,18 @@ const int G_RANGE[4] = {90, 100, 100, 300};
 const int G_SHOT_DELAY_TIME[4] = {50, 50, 300, 3000};
 
 const int G_INC_DAMAGE[4][4] = {{1, 2, 3, 4},
-                              {1, 2, 3, 4},
-                              {1, 2, 3, 4},
-                              {1, 2, 3, 4}};
+                                {1, 2, 3, 4},
+                                {1, 2, 3, 4},
+                                {1, 2, 3, 4}};
 const int G_INC_RANGE[4][4] = {{10, 10, 10, 10},
-                                {10, 10, 10, 10},
-                                {10, 10, 10, 10},
-                                {10, 10, 10, 10}};
+                               {10, 10, 10, 10},
+                               {10, 10, 10, 10},
+                               {10, 10, 10, 10}};
 const int G_DEC_SHOT_DELAY_TIME[4][4] = {{5, 5, 5, 5},
-                                        {50, 50, 50, 50},
-                                        {50, 50, 50, 50},
-                                        {50, 50, 50, 50}};
-const int G_UPDATE_PRICE[4][3][4] = {{{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}}, // gun 0 - dame - speed - range
+                                         {50, 50, 50, 50},
+                                         {50, 50, 50, 50},
+                                         {50, 50, 50, 50}};
+const int G_UPDATE_PRICE[4][3][4] = {{{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
                                      {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
                                      {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
                                      {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}}};
@@ -149,9 +149,7 @@ const int S_PRICE[2] = {10, 15};
 const int S_BUFF[2] = {5, 10};
 const int S_RANGE[2] = {200, 200};
 
-const int S_UPDATE_PRICE[2][4] = {{4, 6, 8, 10},
-                                  {4, 6, 8, 10}};
-const int S_INC_BUFF[2][4] = {{5, 5, 5, 5},
-                                {10, 10, 20, 30}};
-const int S_INC_RANGE[2][4] = {{10, 10, 10, 10},
-                                {10, 10, 10, 10}};
+const int E_HP[3] = {100, 300, 700};
+const int E_DAMAGE[3] = {10, 20, 30};
+const int E_PRIZE[3] = {1, 2, 3};
+const double E_SPEED[3] = {1, 2, 1};
