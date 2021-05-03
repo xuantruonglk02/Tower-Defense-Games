@@ -1,0 +1,7 @@
+- Nội dung chính của game: sử dụng các tháp phòng thủ, sắp xếp chúng lên màn hình để tiêu diệt quân địch kéo đến căn cứ
+- có các wave, có 15s để chuẩn bị khi chuyển sang wave khác. có thể nhấn "NEXT" để chuyển ngay lập tức
+- có thể nâng cấp súng
+- có 4 loại súng và 2 loại tháp hỗ trợ
+- súng: súng máy, súng 2 nòng, súng laze, súng tên lửa
+- tháp hỗ trợ: tăng sát thương và tăng tầm bắn
+- game sẽ thua khi căn cứ hết máu, thắng khi tiêu diệt toàn bộ quái và căn cứ vẫn còn máu
