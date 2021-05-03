@@ -54,9 +54,9 @@ Bullet::~Bullet() {}
 
 void Bullet::updateEnemyPosition() {
     if (success) {
-        lastX = bulletX - (bulletX - lastX) * (disToLast + 20) / disToLast;
-        lastY = bulletY - (bulletY - lastY) * (disToLast + 20) / disToLast;
-        disToLast += 20;
+        lastX = bulletX - (bulletX - lastX) * (disToLast + 2*BULLET_SPEED[type]) / disToLast;
+        lastY = bulletY - (bulletY - lastY) * (disToLast + 2*BULLET_SPEED[type]) / disToLast;
+        disToLast += 2*BULLET_SPEED[type];
         return;
     }
     lastX = target->getX(); lastY = target->getY();
@@ -142,7 +142,7 @@ void Bullet::findNewTarget(vector<Enemy*> &enemys) {
 void Bullet::setTarget(Enemy* &enemy) {target = enemy;}
 Enemy* Bullet::getTarget() {return target;}
 
-void Bullet::targetKilled() {success = true;}
+void Bullet::allTargetKilled() {success = true;}
 
 bool Bullet::outOfScreen() {
     if (bulletX < PLAY_ZONE_X || bulletX > PLAY_ZONE_X + PLAY_ZONE_W || bulletY < PLAY_ZONE_Y || bulletY > PLAY_ZONE_Y + PLAY_ZONE_H)

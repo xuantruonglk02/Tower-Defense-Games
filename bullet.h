@@ -35,7 +35,7 @@ public:
     void setTarget(Enemy* &enemy);
     Enemy* getTarget();
 
-    void targetKilled();
+    void allTargetKilled();
 
     bool outOfScreen();
     bool hitTheTarget();

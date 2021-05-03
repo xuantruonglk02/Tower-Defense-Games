@@ -398,7 +398,7 @@ void Game::eSwap(Enemy* &e1, Enemy* &e2) {
 void Game::freeFire() {
     for (int i = 0; i < guns.size(); i++) {
         for (int j = 0; j < enemys.size(); j++) {
-            if (enemys[j]->getX() + ENEMY_SIZE/2 >= PLAY_ZONE_X)
+            if (enemys[j]->getX() >= PLAY_ZONE_X)
             if (guns[i]->onShot(enemys[j]->getX(), enemys[j]->getY())) {
                 guns[i]->changeShotDirection(enemys[j]->getX(), enemys[j]->getY());
                 if (SDL_GetTicks() - guns[i]->getTimeID() >= guns[i]->getShotDelayTime()) {
@@ -414,11 +414,11 @@ void Game::freeFire() {
 
 void Game::treatWhenEnemyGetHit() {
     for (int i = bullets.size()-1; i >= 0; i--) {
+        if (enemys.size() == 0) bullets[i]->allTargetKilled();
         for (int j = enemys.size()-1; j >= 0; j--) {
             // rocket not boom if doesn't meet target
             if (bullets[i]->getType() == 3 && bullets[i]->getTarget() != enemys[j]) {
                 if (j == 0) {
-                    //bullets[i]->targetKilled();
                     bullets[i]->findNewTarget(enemys);
                 }
                 continue;
@@ -427,8 +427,11 @@ void Game::treatWhenEnemyGetHit() {
             if ((bullets[i]->getType() == 2 && enemys[j]->getHit(bullets[i]->getLastX(), bullets[i]->getLastY(), bullets[i]->getDamage(), bullets[i]->getType()))
                 || (bullets[i]->getType() != 2 && enemys[j]->getHit(bullets[i]->getX(), bullets[i]->getY(), bullets[i]->getDamage(), bullets[i]->getType()))) {
 
-                if (bullets[i]->getType() == 3) treatWhenRocketBoom(bullets[i]);
-                //if (enemys[j]->isDead()) bullets[i]->targetKilled();
+                if (bullets[i]->getType() == 3) {
+                    treatWhenRocketBoom(bullets[i]);
+                    sound->playBoomSound();
+                }
+
                 delete bullets[i];
                 bullets.erase(bullets.begin() + i);
                 break;
