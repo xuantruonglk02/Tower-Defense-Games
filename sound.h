@@ -12,7 +12,11 @@ public:
     void loadMedia();
 
     void playMusic();
+    void playClickSound();
     void playEffectSoundWhenGetHurt();
+    void playGunShottingSound();
+    void playLazeShottingSound();
+    void playBoomSound();
 
     void clickOnMusicItem();
     void clickOnSoundItem();
@@ -24,7 +28,16 @@ private:
     // background music
     Mix_Music* background_music = NULL;
     // sound effect
-    Mix_Chunk* getHurtEffectSound = NULL; 
+    // get hit
+    Mix_Chunk* getHurtEffectSound = NULL;
+    // gun shot
+    Mix_Chunk* gunShottingSound = NULL;
+    // laze shot
+    Mix_Chunk* lazeShottingSound = NULL;
+    // boom
+    Mix_Chunk* boomSound = NULL;
+    // click
+    Mix_Chunk* clickSound = NULL;
 
     bool musicPlaying, soundPlaying;
 };

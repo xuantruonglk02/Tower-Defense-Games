@@ -9,6 +9,7 @@
 #include "config.h"
 #include "utils.h"
 #include "texture.h"
+#include "sound.h"
 
 class Gun {
 public:
@@ -17,7 +18,7 @@ public:
 
     void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
     void drawRangeCircle(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
-    void drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
+    void drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture, int gem);
 
     void changeShotDirection(int enemyX, int enemyY);
 
@@ -48,7 +49,7 @@ public:
     int getX();
     int getY();
 
-    void fire();
+    void fire(Sound* sound);
 
     // check a enemy in range shooting
     bool onShot(double x, double y);
@@ -106,4 +107,5 @@ private:
 
     // true when click on the gun
     bool showUpdate;
+    bool showUpdateButton[3]; // dame speed range
 };

@@ -14,7 +14,8 @@ public:
     ~Base();
 
     void setHP(int eHP);
-
+    void drawGettingHitEffect(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
+    
     void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);
     
     double getHPRate();

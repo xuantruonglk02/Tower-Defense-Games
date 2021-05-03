@@ -11,6 +11,9 @@ Base::Base(int y) {
 Base::~Base() {}
 
 void Base::setHP(int eHP) {hp -= eHP;}
+void Base::drawGettingHitEffect(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+    SDL_RenderCopy(gRenderer, gTexture->getHitTexture, NULL, NULL);
+}
 
 void Base::drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
     SDL_RenderCopy(gRenderer, gTexture->baseTexture, NULL, &dstrect);

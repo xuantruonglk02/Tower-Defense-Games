@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 
 #include <iostream>
 #include <SDL.h>
@@ -29,7 +29,8 @@ public:
             loadTexture(gRenderer, reviewBoardTexture[i], REVIEW_BOARD_PATH[i]);
         }
         // base
-        loadTexture(gRenderer, baseTexture, GUN_BASE_PATH);
+        loadTexture(gRenderer, baseTexture, PORTAL_PATH);
+        loadTexture(gRenderer, getHitTexture, GETTING_HIT_PATH);
         // map
         loadTexture(gRenderer, mapTexture, MAP_PATH);
         loadTexture(gRenderer, roadTexture, ROAD_PATH);
@@ -59,6 +60,9 @@ public:
 
         SDL_SetTextureBlendMode(rangeCircleTexture, SDL_BLENDMODE_BLEND);
         SDL_SetTextureAlphaMod(rangeCircleTexture, 40);
+
+        SDL_SetTextureBlendMode(getHitTexture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(getHitTexture, 60);
     }
     ~gameTexture() {
         // menu
@@ -121,6 +125,7 @@ public:
     SDL_Texture* reviewBoardTexture[6];
     // base
     SDL_Texture* baseTexture = NULL;
+    SDL_Texture* getHitTexture = NULL;
     // map
     SDL_Texture* mapTexture = NULL;
     SDL_Texture* roadTexture = NULL;

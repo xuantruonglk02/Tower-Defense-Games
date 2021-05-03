@@ -38,7 +38,7 @@ ctBoard::ctBoard() {
     dstrect_l.w = LOCK_W; dstrect_l.h = LOCK_H;
 
     // the first money
-    gem = 20000;
+    gem = FIRST_MONEY;
 
     setUpWriterForMoney();
 
@@ -99,7 +99,10 @@ void ctBoard::drawReviewBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture, 
         }
 }
 
-void ctBoard::setGem(int k) {if (gem + k >= 0) gem += k;}
+void ctBoard::setGem(int k) {
+    if (gem + k >= 0) gem += k;
+    if (gem > 99999) gem = 99999;
+}
 int ctBoard::getGem() {return gem;}
 int ctBoard::getGemOfItemChosen() {
     if (gunItemChosen > 3) return S_PRICE[gunItemChosen - 4];
@@ -195,5 +198,5 @@ void ctBoard::drawLocks(SDL_Renderer* &gRenderer, gameTexture* &gTexture, int i)
 }
 
 void ctBoard::drawMoney(SDL_Renderer* &gRenderer) {
-    writer->writeText(gRenderer, "$" + std::to_string(gem), 0, 0);
+    writer->writeText(gRenderer, "$" + std::to_string(gem), 10, 4);
 }

@@ -20,16 +20,19 @@ void Game::start() {
                         if (quit_and_resume) clearGame();
                         setUp();
                         play();
+                        sound->playClickSound();
                         break;
                     case 2:
                         setUpGameForResume();
                         play();
+                        sound->playClickSound();
                         break;
                     case 3:
                         menu->optionsMenu(gRenderer, gTexture, sound);
                         break;
                     case 4:
                         quitGame();
+                        sound->playClickSound();
                         return;
                 }
             }
@@ -50,7 +53,7 @@ void Game::setUp() {
     readWaveData();
 
     timeWriter = new Writer("fonts/comicbd.ttf", 20, 243, 156, 18);
-    waveWriter = new Writer("fonts/ALGER.ttf", 27, 0, 0, 0);
+    waveWriter = new Writer("fonts/ALGER.ttf", 25, 0, 0, 0);
 
     for (int i = 0; i < MAP_SIZE; i++) {gunObject[i] = NULL; supporterObject[i] = NULL;}
 
@@ -71,8 +74,10 @@ void Game::setUp() {
 void Game::play() {
 
     while (!quit) {
-
-        printf(" curwave %d  noticewave %d\n", curWave, noticeWave);
+        if (curWave == wave.size() && enemys.size() == 0) {
+                win = true;
+                break;
+        }
 
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -159,16 +164,12 @@ void Game::play() {
 
         if (wave[curWave].started) callEnemy();
 
-        //sortEnemyList();
+        sortEnemyList();
 
         freeFire();
 
         renderCurrent();
 
-        if (curWave == wave.size() && enemys.size() == 0) {
-                win = true;
-                break;
-        }
         if (base->destroyed()) {
             win = false;
             break;
@@ -362,8 +363,9 @@ void Game::callEnemy() {
 }
 
 void Game::sortEnemyList() {
-    for (int i = 0; i < enemys.size()-1; i++) {
-        for (int j = i+1; j < enemys.size(); j++) {
+    int e_n = enemys.size();
+    for (int i = 0; i < e_n-1; i++) {
+        for (int j = i+1; j < e_n; j++) {
             if (i == j) break;
             int iPos = enemys[i]->getCurrentPos();
             int jPos = enemys[j]->getCurrentPos();
@@ -402,7 +404,7 @@ void Game::freeFire() {
                 if (SDL_GetTicks() - guns[i]->getTimeID() >= guns[i]->getShotDelayTime()) {
                     addBullet(guns[i]->getX(), guns[i]->getY(), enemys[j], guns[i]->getDamage(), guns[i]->getType());
                     guns[i]->setTimeID();
-                    guns[i]->fire();
+                    guns[i]->fire(sound);
                 }
                 break;
             }
@@ -456,6 +458,7 @@ void Game::removeEnemyFinished() {
     for (int i = enemys.size()-1; i >= 0; i--) {
         if (enemys[i]->isSuccess()) {
             base->setHP(enemys[i]->getDamage());
+            base->drawGettingHitEffect(gRenderer, gTexture);
             sound->playEffectSoundWhenGetHurt();
             delete enemys[i];
             enemys.erase(enemys.begin() + i);
@@ -555,12 +558,12 @@ void Game::drawBullets() {
 
 void Game::drawUpdateBoard() {
     for (int i = 0; i < guns.size(); i++) {
-        guns[i]->drawUpdateBoard(gRenderer, gTexture);
+        guns[i]->drawUpdateBoard(gRenderer, gTexture, ctb->getGem());
     }
 }
 
 void Game::noticeWaveCurrent() {
-    waveWriter->writeText(gRenderer, "Wave " + to_string(noticeWave) + "/" + to_string(wave.size()), -1, 100);
+    waveWriter->writeText(gRenderer, "Wave " + to_string(noticeWave) + "/" + to_string(wave.size()), 10, 93);
 }
 
 void Game::showWaitTime() {
@@ -579,6 +582,6 @@ void Game::showWaitTime() {
             || (remainingTime < 1500 && remainingTime >= 1250)
             || (remainingTime < 1000 && remainingTime >= 750)
             || (remainingTime < 500 && remainingTime >= 250))
-        timeWriter->writeText(gRenderer, "time: " + to_string(remainingTime / 1000), 50, 50);
+        timeWriter->writeText(gRenderer, "Next wave in: " + to_string(remainingTime / 1000) + "s", 100, 4);
     }
 }

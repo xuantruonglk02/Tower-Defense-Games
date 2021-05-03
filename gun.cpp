@@ -98,7 +98,14 @@ void Gun::drawRangeCircle(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
         SDL_RenderCopy(gRenderer, gTexture->rangeCircleTexture, NULL, &dstrect_c);
 }
 
-void Gun::drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
+void Gun::drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture, int gem) {
+    // set update button display when enough money
+    if (d_lever < 4 && gem >= G_UPDATE_PRICE[type][0][d_lever]) showUpdateButton[0] = true;
+        else showUpdateButton[0] = false;
+    if (s_lever < 4 && gem >= G_UPDATE_PRICE[type][1][s_lever]) showUpdateButton[1] = true;
+        else showUpdateButton[1] = false;
+    if (r_lever < 4 && gem >= G_UPDATE_PRICE[type][2][r_lever]) showUpdateButton[2] = true;
+        else showUpdateButton[2] = false;
     // draw range shooting circle follow the gun when true
     if (showUpdate) {
         // update board
@@ -106,7 +113,8 @@ void Gun::drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
         // update button
         for (int i = 0; i < 3; i++) {
             // inc button
-            SDL_RenderCopy(gRenderer, gTexture->updateButtonTexture, NULL, &dstrect_ib[i]);
+            if (showUpdateButton[i])
+                SDL_RenderCopy(gRenderer, gTexture->updateButtonTexture, NULL, &dstrect_ib[i]);
             // lever
             SDL_RenderCopy(gRenderer, gTexture->leverTexture, NULL, &dstrect_l[i]);
             // block
@@ -132,8 +140,7 @@ bool Gun::clickOn() {
 }
 
 int Gun::checkClickOnUpdateButton(int x, int y, int gem) {
-    if (x >= dstrect_ib[0].x && x < dstrect_ib[0].x + 30 && y >= dstrect_ib[0].y && y < dstrect_ib[0].y + 30
-        && d_lever < 4 && gem >= G_UPDATE_PRICE[type][0][d_lever]) {
+    if (x >= dstrect_ib[0].x && x < dstrect_ib[0].x + 30 && y >= dstrect_ib[0].y && y < dstrect_ib[0].y + 30 && showUpdateButton[0]) {
             
         d_lever += 1;
         damage += G_INC_DAMAGE[type][d_lever - 1];
@@ -144,8 +151,7 @@ int Gun::checkClickOnUpdateButton(int x, int y, int gem) {
         return G_UPDATE_PRICE[type][0][d_lever - 1];
     }
 
-    if (x >= dstrect_ib[1].x && x < dstrect_ib[1].x + 30 && y >= dstrect_ib[1].y && y < dstrect_ib[1].y + 30
-        && s_lever < 4 && gem >= G_UPDATE_PRICE[type][1][s_lever]) {
+    if (x >= dstrect_ib[1].x && x < dstrect_ib[1].x + 30 && y >= dstrect_ib[1].y && y < dstrect_ib[1].y + 30 && showUpdateButton[1]) {
         if (shotDelayTime - G_DEC_SHOT_DELAY_TIME[type][s_lever] >= 0) {
             s_lever += 1;
         
@@ -158,8 +164,7 @@ int Gun::checkClickOnUpdateButton(int x, int y, int gem) {
         }  
     }
 
-    if (x >= dstrect_ib[2].x && x < dstrect_ib[2].x + 30 && y >= dstrect_ib[2].y && y < dstrect_ib[2].y + 30
-        && r_lever < 4 && gem >= G_UPDATE_PRICE[type][2][r_lever]) {
+    if (x >= dstrect_ib[2].x && x < dstrect_ib[2].x + 30 && y >= dstrect_ib[2].y && y < dstrect_ib[2].y + 30 && showUpdateButton[2]) {
             
         r_lever += 1;
         setRange(range + G_INC_RANGE[type][r_lever - 1]);
@@ -201,9 +206,13 @@ int Gun::getType() {return type;}
 int Gun::getX() {return gX;}
 int Gun::getY() {return gY;}
 
-void Gun::fire() {
+void Gun::fire(Sound* sound) {
     frame++;
     showRocket = false;
+
+    if (type < 2) sound->playGunShottingSound();
+    else if (type == 2) sound->playLazeShottingSound();
+
 }
 
 bool Gun::onShot(double x, double y) {

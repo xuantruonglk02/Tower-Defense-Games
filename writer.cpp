@@ -24,8 +24,7 @@ void Writer::setColorText(Uint8 r, Uint8 g, Uint8 b) {
 
 void Writer::writeText(SDL_Renderer* &gRenderer, string text, int _x, int _y) {
     loadTextTexture(gRenderer, text);
-    if (_x == -1) dstrect.x = PLAY_ZONE_X/2 - dstrect.w/2;
-    else dstrect.x = _x;
+    dstrect.x = _x;
     dstrect.y = _y;
     SDL_RenderCopy(gRenderer, textTexture, NULL, &dstrect);
     SDL_DestroyTexture(textTexture);

@@ -11,14 +11,15 @@ const int PLAY_ZONE_W = 750;
 const int PLAY_ZONE_H = 500;
 
 const std::string WINDOW_TITLE = "Super Tower Defender";
+// menu
 const std::string MENU_PATH = "images/menu.png";
 const std::string O_MENU_PATH = "images/options_menu.png";
 const std::string PLAY_PATH = "images/play.png";
 const std::string RESUME_PATH = "images/resume.png";
 const std::string OPTIONS_PATH = "images/options.png";
 const std::string QUIT_PATH = "images/quit.png";
-const std::string MUTE_PATH = "images/die.png";
-
+const std::string MUTE_PATH = "images/mute.png";
+// control board
 const std::string CTB_PATH = "images/control_board.png";
 const std::string PAUSE_PATH = "images/pause.png";
 const std::string PAUSE_MENU_PATH = "images/options_menu - Copy.png";
@@ -31,16 +32,19 @@ const std::string TOWER_PATH[6] = {"images/tower0.png",
                                     "images/tower3.png",
                                     "images/tower4.png",
                                     "images/tower5.png"};
-const std::string REVIEW_BOARD_PATH[6] = {"images/info.png",
-                                            "images/info.png",
-                                            "images/info.png",
-                                            "images/info.png",
-                                            "images/info.png",
-                                            "images/info.png"};
-
+const std::string REVIEW_BOARD_PATH[6] = {"images/review0.png",
+                                            "images/review1.png",
+                                            "images/review2.png",
+                                            "images/review3.png",
+                                            "images/review4.png",
+                                            "images/review5.png"};
+// map
 const std::string MAP_PATH = "images/map.png";
-const std::string ROAD_PATH = "images/road.png";
-
+const std::string ROAD_PATH = "images/road2.png";
+// base
+const std::string PORTAL_PATH = "images/portal.png";
+const std::string GETTING_HIT_PATH = "images/gethit.png";
+//gun
 const std::string UPDATE_BOARD_PATH = "images/update_board.png";
 const std::string INC_BUTTON_PATH = "images/inc_button.png";
 const std::string SHOOTING_RANGE_CIRCLE_PATH = "images/circle.png";
@@ -53,7 +57,7 @@ const std::string GUN_PATH[4][2] = {{"images/gun0_1.png", "images/gun0_2.png"},
                                     {"images/gun2_1.png", "images/gun2_2.png"},
                                     {"images/gun3_1.png", "images/gun3_1.png"}};
 const std::string ROCKET_FIRST = "images/rocket_1.png";
-
+// supporter
 const std::string SUP_BASE_PATH = "images/supporter_base.png";
 const std::string SUP_DAME_PATH[9] = {"images/1.png",
                                         "images/2.png",
@@ -65,11 +69,12 @@ const std::string SUP_DAME_PATH[9] = {"images/1.png",
                                         "images/8.png",
                                         "images/9.png"};
 const std::string SUP_RANGE_PATH = "images/rada.png";
-
-const std::string ENEMY_PATH[3] = {"images/enemy1.png",
+// enemy
+const std::string ENEMY_PATH[4] = {"images/enemy0.png",
+                                    "images/enemy1.png",
                                     "images/enemy2.png",
                                     "images/enemy3.png"};
-
+// bullet
 const std::string BULLET_PATH[4] = {"images/bullet.png",
                                     "images/double_bullet.png",
                                     "images/laze.png",
@@ -80,7 +85,7 @@ const std::string BOOM_PATH[5] = {"images/boom_1.png",
                                     "images/boom_3.png",
                                     "images/boom_4.png",
                                     "images/boom_5.png"};
-
+// --------------------------------------------------
 const int BUTTON_W = 270;
 const int BUTTON_H = 70;
 const int BUTTON_DISTANCE = 20;
@@ -88,7 +93,7 @@ const int OPTIONS_MENU_W = 300, OPTIONS_MENU_H = 200;
 const int MUSIC_X = 100, MUSIC_Y = 100, MUSIC_R = 30;
 const int SOUND_X = 200, SOUND_Y = 100;
 
-const int REVIEW_BOARD_SIZE[6][2] = {{100, 100}, {200, 200}, {100, 200}, {200, 100}, {300, 300}, {150, 200}}; 
+const int REVIEW_BOARD_SIZE[6][2] = {{335, 194}, {335, 194}, {348, 224}, {348, 253}, {348, 188}, {384, 188}}; 
 const int NEXT_BUTTON_W = 130, NEXT_BUTTON_H = 60;
 const int TOWER_BOARD_X = 3, TOWER_BOARD_Y = 206;
 const int UPDATE_BOARD_W = 130, UPDATE_BOARD_H = 214;
@@ -123,33 +128,36 @@ const int ROCKET_H[2] = {52, 75};
 const int BULLET_SPEED[4] = {20, 20, 0, 5};
 const int BOOM_RANGE = 50;
 
-const int G_PRICE[4] = {2, 4, 6, 8};
-const int G_DAMAGE[4] = {1, 2, 3, 100};
-const int G_RANGE[4] = {90, 100, 100, 300};
-const int G_SHOT_DELAY_TIME[4] = {50, 50, 300, 3000};
+/* ------------------------------------------------------------------------------------------------------ */
+const int FIRST_MONEY = 20000;
 
-const int G_INC_DAMAGE[4][4] = {{1, 2, 3, 4},
-                                {1, 2, 3, 4},
-                                {1, 2, 3, 4},
-                                {1, 2, 3, 4}};
-const int G_INC_RANGE[4][4] = {{10, 10, 10, 10},
-                               {10, 10, 10, 10},
-                               {10, 10, 10, 10},
-                               {10, 10, 10, 10}};
-const int G_DEC_SHOT_DELAY_TIME[4][4] = {{5, 5, 5, 5},
-                                         {50, 50, 50, 50},
-                                         {50, 50, 50, 50},
-                                         {50, 50, 50, 50}};
+const int G_PRICE[4] = {100, 200, 700, 2500};
+const int G_DAMAGE[4] = {50, 110, 200, 1000};
+const int G_RANGE[4] = {80, 90, 100, 150};
+const int G_SHOT_DELAY_TIME[4] = {50, 50, 1000, 3000};
+
+const int G_INC_DAMAGE[4][4] = {{5, 10, 10, 15},
+                                {10, 15, 15, 20},
+                                {20, 20, 25, 30},
+                                {20, 30, 40, 50}};
+const int G_INC_RANGE[4][4] = {{5, 7, 10, 10},
+                               {5, 10, 10, 15},
+                               {5, 10, 15, 20},
+                               {20, 25, 35, 50}};
+const int G_DEC_SHOT_DELAY_TIME[4][4] = {{2, 2, 2, 2},
+                                         {3, 3, 3, 3},
+                                         {30, 50, 100, 150},
+                                         {50, 100, 200, 250}};
 const int G_UPDATE_PRICE[4][3][4] = {{{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
                                      {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
                                      {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
                                      {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}}};
 
-const int S_PRICE[2] = {10, 15};
-const int S_BUFF[2] = {5, 10};
-const int S_RANGE[2] = {200, 200};
+const int S_PRICE[2] = {2000, 2000};
+const int S_BUFF[2] = {20, 50};
+const int S_RANGE[2] = {150, 150};
 
-const int E_HP[3] = {100, 300, 700};
-const int E_DAMAGE[3] = {10, 20, 30};
-const int E_PRIZE[3] = {1, 2, 3};
-const double E_SPEED[3] = {1, 2, 1};
+const int E_HP[4] = {1400, 2500, 3500, 4500};
+const int E_DAMAGE[4] = {10, 20, 30, 40};
+const int E_PRIZE[4] = {40, 70, 150, 250};
+const double E_SPEED[4] = {1, 1, 2, 1};
