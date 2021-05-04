@@ -320,7 +320,8 @@ void Game::setUpGameForResume() {
 
     wave[noticeWave-1].setUpForResume();
 
-    noticeWave = curWave;
+    curWave = noticeWave - 1;
+    noticeWave --;
 
     quit_and_resume = false;
 }
