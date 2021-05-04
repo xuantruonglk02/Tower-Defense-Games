@@ -20,7 +20,10 @@ void Game::start() {
                 switch (menu->clickOn(clickX, clickY)) {
                     case 1:
                         sound->playClickSound();
-                        if (quit_and_resume) clearGame();
+                        if (quit_and_resume) {
+                            clearGame();
+                            menu->selectMapMenu(gRenderer, gTexture, sound, indexOfMap);
+                        }
                         setUp();
                         play();
                         break;
@@ -243,6 +246,7 @@ void Game::endGame() {
 
 void Game::clearGame() {
     quit = false;
+    quit_and_resume = false;
     readyForUpdate = false;
     dragging = false;
     callingEnemy = false;
