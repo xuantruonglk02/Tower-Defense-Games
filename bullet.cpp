@@ -134,12 +134,11 @@ int Bullet::getDamage() {return damage;}
 void Bullet::findNewTarget(vector<Enemy*> &enemys) {
     for (int i = 0; i < enemys.size(); i++)
         if (!enemys[i]->isDead()) {
-            setTarget(enemys[i]);
+            target = enemys[i];
             return;
         }
 }
 
-void Bullet::setTarget(Enemy* &enemy) {target = enemy;}
 Enemy* Bullet::getTarget() {return target;}
 
 void Bullet::allTargetKilled() {success = true;}

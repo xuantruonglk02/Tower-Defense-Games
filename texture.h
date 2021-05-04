@@ -56,9 +56,9 @@ public:
         }
         loadTexture(gRenderer, supporterTexture[1][0], SUP_RANGE_PATH);
         // enemy
-        for (int i = 0; i < 3; i++) loadTexture(gRenderer, enemyTexture[i], ENEMY_PATH[i]);
+        for (int i = 0; i < ENEMY_NUM; i++) loadTexture(gRenderer, enemyTexture[i], ENEMY_PATH[i]);
         // bullet
-        for (int i = 0; i < 4; i++) loadTexture(gRenderer, bulletTexture[i], BULLET_PATH[i]);
+        for (int i = 0; i < BULLET_NUM; i++) loadTexture(gRenderer, bulletTexture[i], BULLET_PATH[i]);
 
 
         SDL_SetTextureBlendMode(rangeCircleTexture, SDL_BLENDMODE_BLEND);
@@ -105,9 +105,9 @@ public:
         SDL_DestroyTexture(baseSupporterTexture);
         for (int i = 0; i < 9; i++) {SDL_DestroyTexture(supporterTexture[0][i]); SDL_DestroyTexture(supporterTexture[1][i]);}
         // enemy
-        for (int i = 0; i < 3; i++) SDL_DestroyTexture(enemyTexture[i]);
+        for (int i = 0; i < ENEMY_NUM; i++) SDL_DestroyTexture(enemyTexture[i]);
         // bullet
-        for (int i = 0; i < 4; i++) SDL_DestroyTexture(bulletTexture[i]);
+        for (int i = 0; i < BULLET_NUM; i++) SDL_DestroyTexture(bulletTexture[i]);
     }
 
 
@@ -150,8 +150,8 @@ public:
     SDL_Texture* baseSupporterTexture = NULL;
     SDL_Texture* supporterTexture[2][9];
     // enemy
-    SDL_Texture* enemyTexture[3];
+    SDL_Texture* enemyTexture[ENEMY_NUM];
     // bullet
-    SDL_Texture* bulletTexture[4];
+    SDL_Texture* bulletTexture[BULLET_NUM];
 
 };

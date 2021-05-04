@@ -36,7 +36,7 @@ void Sound::loadMedia() {
 		printf(" %s\n", Mix_GetError());
 	}
     // gun shot
-    gunShottingSound = Mix_LoadWAV("sounds/gun-shot2.mp3");
+    gunShottingSound = Mix_LoadWAV("sounds/gun-shot.mp3");
     if (gunShottingSound == NULL) {
 		printf(" %s\n", Mix_GetError());
 	}
@@ -55,6 +55,8 @@ void Sound::loadMedia() {
     if (clickSound == NULL) {
 		printf(" %s\n", Mix_GetError());
 	}
+
+    Mix_Volume(3, 20);
 }
 
 void Sound::playMusic() {
@@ -64,27 +66,27 @@ void Sound::playMusic() {
 
 void Sound::playClickSound() {
     if (!soundPlaying) return;
-    Mix_PlayChannel(-1, clickSound, 0);
+    Mix_PlayChannel(1, clickSound, 0);
 }
 
 void Sound::playEffectSoundWhenGetHurt() {
     if (!soundPlaying) return;
-    Mix_PlayChannel(-1, getHurtEffectSound, 0);
+    Mix_PlayChannel(2, getHurtEffectSound, 0);
 }
 
 void Sound::playGunShottingSound() {
     if (!soundPlaying) return;
-    Mix_PlayChannel(1, gunShottingSound, 0);
+    Mix_PlayChannel(3, gunShottingSound, 0);
 }
 
 void Sound::playLazeShottingSound() {
     if (!soundPlaying) return;
-    Mix_PlayChannel(2, lazeShottingSound, 0);
+    Mix_PlayChannel(4, lazeShottingSound, 0);
 }
 
 void Sound::playBoomSound() {
     if (!soundPlaying) return;
-    Mix_PlayChannel(3, boomSound, 0);
+    Mix_PlayChannel(5, boomSound, 0);
 }
 
 void Sound::clickOnMusicItem() {

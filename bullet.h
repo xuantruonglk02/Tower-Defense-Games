@@ -32,7 +32,6 @@ public:
     int getDamage();
 
     void findNewTarget(vector<Enemy*> &enemys);
-    void setTarget(Enemy* &enemy);
     Enemy* getTarget();
 
     void allTargetKilled();

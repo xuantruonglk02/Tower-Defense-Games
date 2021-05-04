@@ -75,11 +75,13 @@ const std::string SUP_DAME_PATH[9] = {"images/1.png",
                                         "images/9.png"};
 const std::string SUP_RANGE_PATH = "images/rada.png";
 // enemy
+const int ENEMY_NUM = 4;
 const std::string ENEMY_PATH[4] = {"images/enemy0.png",
                                     "images/enemy1.png",
                                     "images/enemy2.png",
                                     "images/enemy3.png"};
 // bullet
+const int BULLET_NUM = 4;
 const std::string BULLET_PATH[4] = {"images/bullet.png",
                                     "images/double_bullet.png",
                                     "images/laze.png",
@@ -138,7 +140,7 @@ const int BULLET_SPEED[4] = {20, 20, 0, 5};
 const int BOOM_RANGE = 50;
 
 /* ------------------------------------------------------------------------------------------------------ */
-const int FIRST_MONEY = 20000;
+const int FIRST_MONEY = 200;
 
 const int G_PRICE[4] = {100, 200, 700, 2500};
 const int G_DAMAGE[4] = {50, 110, 200, 1000};

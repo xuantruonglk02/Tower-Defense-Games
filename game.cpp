@@ -208,6 +208,7 @@ void Game::play() {
         removeEnemyFinished();
 
         SDL_RenderPresent(gRenderer);
+        //SDL_Delay(100);
 
     }
 
@@ -356,6 +357,29 @@ void Game::gunGetBuff(Gun* &pGun) {
         if (supporters[i]->inRange(pGun->getX(), pGun->getY())) pGun->setBuff(supporters[i]->getType(), supporters[i]->getBuff());
 }
 
+void Game::removeGun() {
+    for (int i = 0; i < guns.size(); i++)
+        if (guns[i] == gunObject[indexOfObject]) {
+            delete guns[i];
+            guns.erase(guns.begin() + i);
+            gunObject[indexOfObject] = NULL;
+            mapOfObject[indexOfObject] = -2;
+            break;
+        }
+}
+
+void Game::removeSupporter() {
+    for (int i = 0; i < supporters.size(); i++)
+        if (supporters[i] == supporterObject[indexOfObject]) {
+            buffForGun(supporters[i], -1);
+            delete supporters[i];
+            supporters.erase(supporters.begin() + i);
+            supporterObject[indexOfObject] = NULL;
+            mapOfObject[indexOfObject] = -2;
+            break;
+        }
+}
+
 void Game::waitingForNextWave() {
     if (wave[curWave].timeStarted == false) {
         noticeWave++;
@@ -438,29 +462,6 @@ void Game::freeFire() {
     }
 }
 
-void Game::removeGun() {
-    for (int i = 0; i < guns.size(); i++)
-        if (guns[i] == gunObject[indexOfObject]) {
-            delete guns[i];
-            guns.erase(guns.begin() + i);
-            gunObject[indexOfObject] = NULL;
-            mapOfObject[indexOfObject] = -2;
-            break;
-        }
-}
-
-void Game::removeSupporter() {
-    for (int i = 0; i < supporters.size(); i++)
-        if (supporters[i] == supporterObject[indexOfObject]) {
-            buffForGun(supporters[i], -1);
-            delete supporters[i];
-            supporters.erase(supporters.begin() + i);
-            supporterObject[indexOfObject] = NULL;
-            mapOfObject[indexOfObject] = -2;
-            break;
-        }
-}
-
 void Game::treatWhenEnemyGetHit() {
     for (int i = bullets.size()-1; i >= 0; i--) {
         if (enemys.size() == 0) bullets[i]->allTargetKilled();
@@ -470,14 +471,13 @@ void Game::treatWhenEnemyGetHit() {
                 if (j == 0) {
                     bullets[i]->findNewTarget(enemys);
                 }
-                continue;
             }
-
+            else
             if ((bullets[i]->getType() == 2 && enemys[j]->getHit(bullets[i]->getLastX(), bullets[i]->getLastY(), bullets[i]->getDamage(), bullets[i]->getType()))
                 || (bullets[i]->getType() != 2 && enemys[j]->getHit(bullets[i]->getX(), bullets[i]->getY(), bullets[i]->getDamage(), bullets[i]->getType()))) {
 
                 if (bullets[i]->getType() == 3) {
-                    treatWhenRocketBoom(bullets[i]);
+                    treatWhenRocketBoom(enemys[j]->getX(), enemys[j]->getY(), bullets[i]->getDamage());
                     sound->playBoomSound();
                 }
 
@@ -490,9 +490,9 @@ void Game::treatWhenEnemyGetHit() {
     }
 }
 
-void Game::treatWhenRocketBoom(Bullet* &rocket) {
+void Game::treatWhenRocketBoom(int boomX, int boomY, int damage) {
     for (int i = 0; i < enemys.size(); i++) {
-        enemys[i]->getBoom(rocket->getX(), rocket->getY(), rocket->getDamage());
+        enemys[i]->getBoom(boomX, boomY, damage);
     }
 }
 

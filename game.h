@@ -49,6 +49,9 @@ public:
     
     void buffForGun(Supporter* &pSupporter, int k = 1);
     void gunGetBuff(Gun* &pGun);
+
+    void removeGun();
+    void removeSupporter();
     
     void waitingForNextWave();
     
@@ -59,12 +62,9 @@ public:
 
     void freeFire();
 
-    // remove
-    void removeGun();
-    void removeSupporter();
-    
+    // remove    
     void treatWhenEnemyGetHit();
-    void treatWhenRocketBoom(Bullet* &rocket);
+    void treatWhenRocketBoom(int boomX, int boomY, int damage);
     void remoteEnemyDied();
     void removeEnemyFinished();
     void removeBulletOutScreen();

@@ -23,8 +23,8 @@ void initSDL(SDL_Window* &gWindow, SDL_Renderer* &gRenderer) {
 void quitSDL(SDL_Window* &gWindow, SDL_Renderer* &gRenderer) {
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
-    SDL_Quit();
     IMG_Quit();
+    SDL_Quit();
 }
 
 void logSDLError(const std::string &msg, bool fatal) {
