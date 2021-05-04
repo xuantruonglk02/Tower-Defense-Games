@@ -13,6 +13,7 @@
 
 using std::vector;
 using std::ifstream;
+using std::string;
 
 class Map {
 public:
@@ -20,7 +21,7 @@ public:
     ~Map();
 
     // read map data
-    void readFromFile(bool &quit);
+    void readFromFile(string path, bool &quit);
 
     // draw the map
     void drawToRender(SDL_Renderer* &gRenderer, gameTexture* &gTexture);

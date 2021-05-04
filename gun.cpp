@@ -70,6 +70,10 @@ Gun::Gun(double x, double y, int _type) {
     dstrect_ib[1].h = 30; dstrect_ib[1].w = 30; dstrect_ib[1].x = dstrect_ib[0].x; dstrect_ib[1].y = dstrect_ib[0].y + 68;
     dstrect_ib[2].h = 30; dstrect_ib[2].w = 30; dstrect_ib[2].x = dstrect_ib[0].x; dstrect_ib[2].y = dstrect_ib[1].y + 68;
 
+    // delete icon
+    dstrect_d.w = TRASH_SIZE; dstrect_d.h = TRASH_SIZE;
+    dstrect_d.x = gX - dstrect_d.w/2; dstrect_d.y = gY + GUN_BASE_SIZE/2 + 10;
+
     // true when click on gun
     showUpdate = true;
 
@@ -120,6 +124,8 @@ void Gun::drawUpdateBoard(SDL_Renderer* &gRenderer, gameTexture* &gTexture, int 
             // block
             SDL_RenderCopy(gRenderer, gTexture->blockTexture, NULL, &dstrect_b[i]);
         }
+        // delete icon
+        SDL_RenderCopy(gRenderer, gTexture->trashTexture, NULL, &dstrect_d);
     }
 }
 
@@ -176,6 +182,12 @@ int Gun::checkClickOnUpdateButton(int x, int y, int gem) {
     }
 
     return 0;
+}
+
+bool Gun::checkClickOnTrashIcon(int x, int y) {
+    if (sqrt((dstrect_d.x + dstrect_d.w/2 - x)*(dstrect_d.x + dstrect_d.w/2 - x) + (dstrect_d.y + dstrect_d.h/2 - y)*(dstrect_d.y + dstrect_d.h/2 - y)) <= TRASH_SIZE/2)
+        return true;
+    return false;
 }
 
 void Gun::setRange(int r) {

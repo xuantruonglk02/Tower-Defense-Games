@@ -47,7 +47,7 @@ public:
     void addSupporter(double x, double y, int type);
     void addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type);
     
-    void buffForGun(Supporter* &pSupporter);
+    void buffForGun(Supporter* &pSupporter, int k = 1);
     void gunGetBuff(Gun* &pGun);
     
     void waitingForNextWave();
@@ -60,6 +60,9 @@ public:
     void freeFire();
 
     // remove
+    void removeGun();
+    void removeSupporter();
+    
     void treatWhenEnemyGetHit();
     void treatWhenRocketBoom(Bullet* &rocket);
     void remoteEnemyDied();
@@ -119,6 +122,7 @@ private:
 
     SDL_Event e;
     Uint32 timeID;
+    int indexOfMap;
     int mapOfObject[150];
     double mouseX, mouseY;
     int clickX, clickY;

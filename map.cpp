@@ -3,8 +3,8 @@
 Map::Map() {}
 Map::~Map() {}
 
-void Map::readFromFile(bool &quit) {
-    ifstream finp("map/map1.in");
+void Map::readFromFile(string path, bool &quit) {
+    ifstream finp(path);
     if (finp.fail()) {printf(" -failed to open map1.in\n"); quit = true; return;}
     int n;
     finp >> n;

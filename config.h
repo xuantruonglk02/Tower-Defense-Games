@@ -16,6 +16,8 @@ const std::string MENU_PATH = "images/menu.png";
 const std::string O_MENU_PATH = "images/options_menu.png";
 const std::string PLAY_PATH = "images/play.png";
 const std::string RESUME_PATH = "images/resume.png";
+const std::string SELECT_MAP_PATH = "images/select-map.png";
+const std::string SELECT_MAP_MENU_PATH = "images/select-map-menu.png";
 const std::string OPTIONS_PATH = "images/options.png";
 const std::string QUIT_PATH = "images/quit.png";
 const std::string MUTE_PATH = "images/mute.png";
@@ -39,8 +41,10 @@ const std::string REVIEW_BOARD_PATH[6] = {"images/review0.png",
                                             "images/review4.png",
                                             "images/review5.png"};
 // map
+const int MAP_NUM = 2;
 const std::string MAP_PATH = "images/map.png";
 const std::string ROAD_PATH = "images/road2.png";
+const std::string MAP_DATA_PATH[MAP_NUM] = {"map/map1.in", "map/map2.in"};
 // base
 const std::string PORTAL_PATH = "images/portal.png";
 const std::string GETTING_HIT_PATH = "images/gethit.png";
@@ -50,6 +54,7 @@ const std::string INC_BUTTON_PATH = "images/inc_button.png";
 const std::string SHOOTING_RANGE_CIRCLE_PATH = "images/circle.png";
 const std::string LEVER_PATH = "images/lever.png";
 const std::string BLOCK_PATH = "images/block.png";
+const std::string DELETE_PATH = "images/delete.png";
 
 const std::string GUN_BASE_PATH = "images/gun_base.png";
 const std::string GUN_PATH[4][2] = {{"images/gun0_1.png", "images/gun0_2.png"},
@@ -92,8 +97,11 @@ const int BUTTON_DISTANCE = 20;
 const int OPTIONS_MENU_W = 300, OPTIONS_MENU_H = 200;
 const int MUSIC_X = 100, MUSIC_Y = 100, MUSIC_R = 30;
 const int SOUND_X = 200, SOUND_Y = 100;
+const int SELECT_MAP_MENU_W = 600, SELECT_MAP_MENU_H = 250;
+const int MAP_REVIEW_W = 225, MAP_REVIEW_H = 150;
+const int MAP_XY[MAP_NUM][2] = {{50, 50}, {325, 50}};
 
-const int REVIEW_BOARD_SIZE[6][2] = {{335, 194}, {335, 194}, {348, 224}, {348, 253}, {348, 188}, {384, 188}}; 
+const int REVIEW_BOARD_SIZE[6][2] = {{335, 194}, {335, 194}, {348, 224}, {348, 253}, {348, 188}, {384, 188}};
 const int NEXT_BUTTON_W = 130, NEXT_BUTTON_H = 60;
 const int TOWER_BOARD_X = 3, TOWER_BOARD_Y = 206;
 const int UPDATE_BOARD_W = 130, UPDATE_BOARD_H = 214;
@@ -109,6 +117,7 @@ const int MAP_SIZE = 150;
 const int UPDATE_BOARD_BORDER = 5;
 const int INC_BUTTON_SIZE = 30;
 
+const int TRASH_SIZE = 30;
 const int GUN_BASE_SIZE = 40;
 const int ROCKET_FIRST_H = 52;
 const int ROCKET_FIRST_W = 24;

@@ -29,6 +29,8 @@ public:
     bool clickOn();
     // check click on update button
     int checkClickOnUpdateButton(int x, int y, int gem);
+    // click on trash icon
+    bool checkClickOnTrashIcon(int x, int y);
 
     // set the range shooting
     void setRange(int r);
@@ -78,6 +80,8 @@ private:
     SDL_Rect dstrect_l[3];
     // block
     SDL_Rect dstrect_b[3];
+    // delete icon
+    SDL_Rect dstrect_d;
 
     SDL_Point centerPoint_g[2];
     SDL_Point centerPoint_rk;

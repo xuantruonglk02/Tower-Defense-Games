@@ -133,14 +133,17 @@ void ctBoard::pauseMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound*
                 SDL_GetMouseState(&clickX, &clickY);
 
                 if (sqrt((clickX - MUSIC_X - dstrect_pm.x)*(clickX - MUSIC_X - dstrect_pm.x) + (clickY - MUSIC_Y - dstrect_pm.y)*(clickY - MUSIC_Y - dstrect_pm.y)) <= MUSIC_R) {
+                    sound->playClickSound();
                     sound->clickOnMusicItem();
                 }
 
                 if (sqrt((clickX - SOUND_X - dstrect_pm.x)*(clickX - SOUND_X - dstrect_pm.x) + (clickY - SOUND_Y - dstrect_pm.y)*(clickY - SOUND_Y - dstrect_pm.y)) <= MUSIC_R) {
+                    sound->playClickSound();
                     sound->clickOnSoundItem();
                 }
 
                 if (clickX >= BACK_BUTTON_X + dstrect_pm.x && clickX <= BACK_BUTTON_X + dstrect_pm.x + BACK_BUTTON_W && clickY >= BACK_BUTTON_Y + dstrect_pm.y && clickY <= BACK_BUTTON_Y + dstrect_pm.y + BACK_BUTTON_H) {
+                    sound->playClickSound();
                     resume = true;
                     return;
                 }

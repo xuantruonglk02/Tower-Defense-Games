@@ -24,11 +24,15 @@ public:
     void optionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound);
     void drawOptionsMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound);
 
+    void selectMapMenu(SDL_Renderer* &gRenderer, gameTexture* &gTexture, Sound* &sound, int &indexOfMap);
+
 private:
     // button
-    SDL_Rect dstrect_p, dstrect_r, dstrect_o, dstrect_q;
+    SDL_Rect dstrect_p, dstrect_r, dstrect_sm, dstrect_o, dstrect_q;
     // options menu
     SDL_Rect dstrect_om;
+    // select map menu
+    SDL_Rect dstrect_smm;
     // mute icon
     SDL_Rect dstrect_m_m, dstrect_m_s;
 

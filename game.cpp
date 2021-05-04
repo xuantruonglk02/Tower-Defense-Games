@@ -9,6 +9,8 @@ void Game::start() {
     sound = new Sound();
     sound->playMusic();
 
+    indexOfMap = 0; // default
+
     while (true) {
         menu->drawMenu(gRenderer, gTexture);
         SDL_RenderPresent(gRenderer);
@@ -17,22 +19,28 @@ void Game::start() {
                 SDL_GetMouseState(&clickX, &clickY);
                 switch (menu->clickOn(clickX, clickY)) {
                     case 1:
+                        sound->playClickSound();
                         if (quit_and_resume) clearGame();
                         setUp();
                         play();
-                        sound->playClickSound();
                         break;
                     case 2:
+                        sound->playClickSound();
                         setUpGameForResume();
                         play();
-                        sound->playClickSound();
                         break;
                     case 3:
-                        menu->optionsMenu(gRenderer, gTexture, sound);
+                        sound->playClickSound();
+                        menu->selectMapMenu(gRenderer, gTexture, sound, indexOfMap);
                         break;
                     case 4:
-                        quitGame();
                         sound->playClickSound();
+                        menu->optionsMenu(gRenderer, gTexture, sound);
+                        break;
+                    case 5:
+                        sound->playClickSound();
+                        clearGame();
+                        quitGame();
                         return;
                 }
             }
@@ -44,7 +52,7 @@ void Game::setUp() {
     ctb = new ctBoard();
 
     map = new Map();
-    map->readFromFile(quit);
+    map->readFromFile(MAP_DATA_PATH[indexOfMap], quit);
     for (int i = 0; i < MAP_SIZE; i++) mapOfObject[i] = -2;
     map->buildMapOfObject(mapOfObject);
 
@@ -93,6 +101,7 @@ void Game::play() {
                 SDL_GetMouseState(&clickX, &clickY);
 
                 if (ctb->clickPauseButton(clickX, clickY)) {
+                    sound->playClickSound();
                     ctb->pauseMenu(gRenderer, gTexture, sound, quit_and_resume);
                     if (quit_and_resume) {
                         menu->setDstRectButton(true);
@@ -100,17 +109,34 @@ void Game::play() {
                     }
                     timeID += ctb->getTimePause();
                 }
-
+                
                 if (ctb->clickNextButton(clickX, clickY)) {
                     if (curWave != wave.size() && !wave[curWave].started) {
+                        sound->playClickSound();
                         callNextWave = true;
                         waitTimeTransWave = 0;
                     }
                 }
-
+                
                 if (ctb->aTowerIsChosen(clickX, clickY)) {
                     dragging = true;
                     resetUpdateDisplay(NULL, NULL);
+                }
+
+                if (readyForUpdate) {
+                    if (gunObject[indexOfObject] != nullptr)
+                        ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
+                    
+                    if (gunObject[indexOfObject] != nullptr && gunObject[indexOfObject]->checkClickOnTrashIcon(clickX, clickY)) {
+                        removeGun();
+                        readyForUpdate = false;
+                        clickX = -1; clickY = -1;
+                    }
+                    if (supporterObject[indexOfObject] != nullptr && supporterObject[indexOfObject]->checkClickOnTrashIcon(clickX, clickY)) {
+                        removeSupporter();
+                        readyForUpdate = false;
+                        clickX = -1; clickY = -1;
+                    }
                 }
 
                 treatPosition(clickX, clickY, row, col);
@@ -124,14 +150,14 @@ void Game::play() {
                             readyForUpdate = false;
                         }
                     } else if (supporterObject[row * 15 + col] != nullptr) {
-                        if (supporterObject[row * 15 + col]->clickOn())
+                        if (supporterObject[row * 15 + col]->clickOn()) {
                             resetUpdateDisplay(NULL, supporterObject[row * 15 + col]);
+                            readyForUpdate = true;
+                            indexOfObject = row * 15 + col;
+                        } else {
+                            readyForUpdate = false;
+                        }
                     } else resetUpdateDisplay(NULL, NULL);
-                }
-
-                if (readyForUpdate) {
-                    if (gunObject[indexOfObject] != nullptr)
-                        ctb->setGem(-(gunObject[indexOfObject]->checkClickOnUpdateButton(clickX, clickY, ctb->getGem())));
                 }
             }
             
@@ -320,9 +346,9 @@ void Game::addBullet(double gX, double gY, Enemy* &_enemy, int dmg, int type) {
     bullets.push_back(new Bullet(gX, gY, _enemy, dmg, type));
 }
 
-void Game::buffForGun(Supporter* &pSupporter) {
+void Game::buffForGun(Supporter* &pSupporter, int k) {
     for (int i = 0; i < guns.size(); i++)
-        if (pSupporter->inRange(guns[i]->getX(), guns[i]->getY())) guns[i]->setBuff(pSupporter->getType(), pSupporter->getBuff());
+        if (pSupporter->inRange(guns[i]->getX(), guns[i]->getY())) guns[i]->setBuff(pSupporter->getType(), k*(pSupporter->getBuff()));
 }
 
 void Game::gunGetBuff(Gun* &pGun) {
@@ -410,6 +436,29 @@ void Game::freeFire() {
             }
         }
     }
+}
+
+void Game::removeGun() {
+    for (int i = 0; i < guns.size(); i++)
+        if (guns[i] == gunObject[indexOfObject]) {
+            delete guns[i];
+            guns.erase(guns.begin() + i);
+            gunObject[indexOfObject] = NULL;
+            mapOfObject[indexOfObject] = -2;
+            break;
+        }
+}
+
+void Game::removeSupporter() {
+    for (int i = 0; i < supporters.size(); i++)
+        if (supporters[i] == supporterObject[indexOfObject]) {
+            buffForGun(supporters[i], -1);
+            delete supporters[i];
+            supporters.erase(supporters.begin() + i);
+            supporterObject[indexOfObject] = NULL;
+            mapOfObject[indexOfObject] = -2;
+            break;
+        }
 }
 
 void Game::treatWhenEnemyGetHit() {

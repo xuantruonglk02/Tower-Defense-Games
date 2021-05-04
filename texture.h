@@ -13,6 +13,7 @@ public:
         loadTexture(gRenderer, optionsMenuTexture, O_MENU_PATH);
         loadTexture(gRenderer, playButtonTexture, PLAY_PATH);
         loadTexture(gRenderer, resumeButtonTexture, RESUME_PATH);
+        loadTexture(gRenderer, selectMapButtonTexture, SELECT_MAP_PATH);
         loadTexture(gRenderer, optionsButtonTexture, OPTIONS_PATH);
         loadTexture(gRenderer, quitButtonTexture, QUIT_PATH);
         loadTexture(gRenderer, muteTexture, MUTE_PATH);
@@ -34,6 +35,7 @@ public:
         // map
         loadTexture(gRenderer, mapTexture, MAP_PATH);
         loadTexture(gRenderer, roadTexture, ROAD_PATH);
+        loadTexture(gRenderer, selectMapMenuTexture, SELECT_MAP_MENU_PATH);
         // gun
         loadTexture(gRenderer, baseGunTexture, GUN_BASE_PATH);
         loadTexture(gRenderer, rocketNotFireTexture, ROCKET_FIRST);
@@ -41,6 +43,7 @@ public:
         loadTexture(gRenderer, updateButtonTexture, INC_BUTTON_PATH);
         loadTexture(gRenderer, leverTexture, LEVER_PATH);
         loadTexture(gRenderer, blockTexture, BLOCK_PATH);
+        loadTexture(gRenderer, trashTexture, DELETE_PATH);
         for (int i = 0; i < 4; i++) {
             loadTexture(gRenderer, gunTexture[i][0], GUN_PATH[i][0]);
             loadTexture(gRenderer, gunTexture[i][1], GUN_PATH[i][1]);
@@ -70,6 +73,7 @@ public:
         SDL_DestroyTexture(optionsMenuTexture);
         SDL_DestroyTexture(playButtonTexture);
         SDL_DestroyTexture(resumeButtonTexture);
+        SDL_DestroyTexture(selectMapButtonTexture);
         SDL_DestroyTexture(optionsButtonTexture);
         SDL_DestroyTexture(quitButtonTexture);
         SDL_DestroyTexture(muteTexture);
@@ -87,6 +91,7 @@ public:
         // map
         SDL_DestroyTexture(mapTexture);
         SDL_DestroyTexture(roadTexture);
+        SDL_DestroyTexture(selectMapMenuTexture);
         // gun
         SDL_DestroyTexture(baseGunTexture);
         SDL_DestroyTexture(rocketNotFireTexture);
@@ -94,6 +99,7 @@ public:
         SDL_DestroyTexture(updateButtonTexture);
         SDL_DestroyTexture(leverTexture);
         SDL_DestroyTexture(blockTexture);
+        SDL_DestroyTexture(trashTexture);
         for (int i = 0; i < 4; i++) {SDL_DestroyTexture(gunTexture[i][0]); SDL_DestroyTexture(gunTexture[i][1]);}
         // supporter
         SDL_DestroyTexture(baseSupporterTexture);
@@ -110,6 +116,7 @@ public:
     SDL_Texture* optionsMenuTexture = NULL;
     SDL_Texture* playButtonTexture = NULL;
     SDL_Texture* resumeButtonTexture = NULL;
+    SDL_Texture* selectMapButtonTexture = NULL;
     SDL_Texture* optionsButtonTexture = NULL;
     SDL_Texture* quitButtonTexture = NULL;
     SDL_Texture* muteTexture = NULL;
@@ -129,6 +136,7 @@ public:
     // map
     SDL_Texture* mapTexture = NULL;
     SDL_Texture* roadTexture = NULL;
+    SDL_Texture* selectMapMenuTexture = NULL;
     // gun
     SDL_Texture* baseGunTexture = NULL;
     SDL_Texture* rocketNotFireTexture = NULL;
@@ -136,6 +144,7 @@ public:
     SDL_Texture* updateButtonTexture = NULL;
     SDL_Texture* leverTexture = NULL;
     SDL_Texture* blockTexture = NULL;
+    SDL_Texture* trashTexture = NULL;
     SDL_Texture* gunTexture[4][2];
     // supporter
     SDL_Texture* baseSupporterTexture = NULL;

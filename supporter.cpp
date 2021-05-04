@@ -20,11 +20,15 @@ Supporter::Supporter(int x, int y, int _type) {
     degree = 0;
     frame = 0;
 
+    // base
     dstrect_bs.h = GUN_BASE_SIZE; dstrect_bs.w = GUN_BASE_SIZE;
     dstrect_bs.x = sX - dstrect_bs.w / 2; dstrect_bs.y = sY - dstrect_bs.h / 2;
-
+    // supporter
     dstrect_s.x = sX - SUP_SIZE[type]/2; dstrect_s.y = sY - SUP_SIZE[type]/2;
     dstrect_s.h = SUP_SIZE[type]; dstrect_s.w = SUP_SIZE[type];
+    // delete icon
+    dstrect_d.w = TRASH_SIZE; dstrect_d.h = TRASH_SIZE;
+    dstrect_d.x = sX - dstrect_d.w/2; dstrect_d.y = sY + GUN_BASE_SIZE/2 + 10;
 
     setRange(S_RANGE[_type]);
 
@@ -42,6 +46,12 @@ bool Supporter::clickOn() {
         showRangeCircle = false;
         return false;
     }
+}
+
+bool Supporter::checkClickOnTrashIcon(int x, int y) {
+    if (sqrt((dstrect_d.x + dstrect_d.w/2 - x)*(dstrect_d.x + dstrect_d.w/2 - x) + (dstrect_d.y + dstrect_d.h/2 - y)*(dstrect_d.y + dstrect_d.h/2 - y)) <= TRASH_SIZE/2)
+        return true;
+    return false;
 }
 
 bool Supporter::inRange(int x, int y) {
@@ -78,6 +88,9 @@ void Supporter::drawToRenderer(SDL_Renderer* &gRenderer, gameTexture* &gTexture)
 }
 
 void Supporter::drawRangeCircle(SDL_Renderer* &gRenderer, gameTexture* &gTexture) {
-    if (showRangeCircle)
+    if (showRangeCircle) {
         SDL_RenderCopy(gRenderer, gTexture->rangeCircleTexture, NULL, &dstrect_r);
+        // draw trash icon
+        SDL_RenderCopy(gRenderer, gTexture->trashTexture, NULL, &dstrect_d);
+    }
 }

@@ -18,7 +18,7 @@ public:
 
     bool clickOn();
 
-    int checkClickOnUpdateButton(int x, int y, int gem);
+    bool checkClickOnTrashIcon(int x, int y);
 
     bool inRange(int x, int y);
 
@@ -36,11 +36,10 @@ public:
 
 private:
 
-    SDL_Rect dstrect_bs;
-
-    SDL_Rect dstrect_s;
-
-    SDL_Rect dstrect_r;
+    SDL_Rect dstrect_bs; // base
+    SDL_Rect dstrect_s; // supporter
+    SDL_Rect dstrect_r; // range
+    SDL_Rect dstrect_d; // delete icon
 
     SDL_Point centerPoint;
 
