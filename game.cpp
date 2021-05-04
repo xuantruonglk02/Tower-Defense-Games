@@ -211,8 +211,8 @@ void Game::play() {
         removeEnemyFinished();
 
         SDL_RenderPresent(gRenderer);
-        //SDL_Delay(100);
-
+        
+        SDL_Delay(1000/FPS);
     }
 
     endGame();

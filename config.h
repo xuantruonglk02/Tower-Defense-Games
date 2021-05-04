@@ -142,6 +142,8 @@ const int BULLET_SPEED[4] = {20, 20, 0, 5};
 const int BOOM_RANGE = 50;
 
 /* ------------------------------------------------------------------------------------------------------ */
+const int FPS = 120;
+
 const int FIRST_MONEY = 150;
 
 const int G_PRICE[4] = {100, 200, 700, 2500};
