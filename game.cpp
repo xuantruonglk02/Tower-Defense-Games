@@ -293,7 +293,7 @@ void Game::quitGame() {
 }
 
 void Game::readWaveData() {
-    ifstream finp("wave/map1.in");
+    ifstream finp(WAVE_DATA_PATH[indexOfMap]);
     if (finp.fail()) {printf(" -failed to open wave.in\n"); quit = true; return;}
     int n_wave;
     finp >> n_wave;

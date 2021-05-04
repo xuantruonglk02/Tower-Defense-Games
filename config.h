@@ -45,6 +45,8 @@ const int MAP_NUM = 2;
 const std::string MAP_PATH = "images/map.png";
 const std::string ROAD_PATH = "images/road2.png";
 const std::string MAP_DATA_PATH[MAP_NUM] = {"map/map1.in", "map/map2.in"};
+// wave
+const std::string WAVE_DATA_PATH[MAP_NUM] = {"wave/map1.in", "wave/map2.in"};
 // base
 const std::string PORTAL_PATH = "images/portal.png";
 const std::string GETTING_HIT_PATH = "images/gethit.png";
@@ -140,35 +142,35 @@ const int BULLET_SPEED[4] = {20, 20, 0, 5};
 const int BOOM_RANGE = 50;
 
 /* ------------------------------------------------------------------------------------------------------ */
-const int FIRST_MONEY = 200;
+const int FIRST_MONEY = 150;
 
 const int G_PRICE[4] = {100, 200, 700, 2500};
 const int G_DAMAGE[4] = {50, 110, 200, 1000};
 const int G_RANGE[4] = {80, 90, 100, 150};
 const int G_SHOT_DELAY_TIME[4] = {50, 50, 1000, 3000};
 
-const int G_INC_DAMAGE[4][4] = {{5, 10, 10, 15},
-                                {10, 15, 15, 20},
+const int G_INC_DAMAGE[4][4] = {{2, 3, 5, 5},
+                                {2, 3, 5, 7},
                                 {20, 20, 25, 30},
                                 {20, 30, 40, 50}};
-const int G_INC_RANGE[4][4] = {{5, 7, 10, 10},
-                               {5, 10, 10, 15},
+const int G_INC_RANGE[4][4] = {{5, 5, 7, 10},
+                               {5, 7, 10, 15},
                                {5, 10, 15, 20},
-                               {20, 25, 35, 50}};
+                               {5, 10, 20, 40}};
 const int G_DEC_SHOT_DELAY_TIME[4][4] = {{2, 2, 2, 2},
                                          {3, 3, 3, 3},
                                          {30, 50, 100, 150},
                                          {50, 100, 200, 250}};
-const int G_UPDATE_PRICE[4][3][4] = {{{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
-                                     {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
-                                     {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}},
-                                     {{1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}}};
+const int G_UPDATE_PRICE[4][3][4] = {{{10, 20, 50, 100}, {5, 10, 10, 20}, {10, 30, 70, 150}},
+                                     {{15, 25, 75, 130}, {5, 10, 10, 20}, {20, 50, 100, 150}},
+                                     {{20, 50, 100, 200}, {20, 50, 100, 200}, {10, 30, 70, 150}},
+                                     {{30, 70, 200, 500}, {50, 100, 300, 600}, {50, 100, 300, 700}}};
 
 const int S_PRICE[2] = {2000, 2000};
-const int S_BUFF[2] = {20, 50};
+const int S_BUFF[2] = {15, 20};
 const int S_RANGE[2] = {150, 150};
 
 const int E_HP[4] = {1400, 2500, 3500, 4500};
 const int E_DAMAGE[4] = {10, 20, 30, 40};
-const int E_PRIZE[4] = {40, 70, 150, 250};
+const int E_PRIZE[4] = {30, 50, 120, 200};
 const double E_SPEED[4] = {1, 1, 2, 1};

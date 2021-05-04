@@ -17,12 +17,15 @@
     - map: đọc dữ liệu map từ file, tạo bản đồ đường đi của quái, tạo bản đồ vật cản trên map.
     - base: game kết thúc khi máu của base về 0.
     - wave: đọc dữ liệu về loại, số lượng quái từ file, lưu lại để gọi quái.
+    - control_board: gồm bảng chọn tháp, hiển thị tiền, thời gian, thông tin từng loại tháp, có nút tạm dừng, tua nhanh thời gian chờ
     - gun: quản lí các loại súng về: vị trí, sát thương, tốc độ bắn, phạm vi bắn.
     - supporter: quản lí các loại tháp hỗ trợ về: vị trí, lượng sát thương hay tầm bắn mà súng được buff thêm.
     - bullet: xử lí việc di chuyển của viên đạn. (định hướng đường đạn với loại đạn tên lửa)
     - enemy: nhận dữ liệu đường đi từ map, điều khiển quái đi theo đường đi. thêm cả máu, sát thương gây ra cho căn cứ.
 - file config.h: lưu thông số game
 - file utils: chứa hàm khởi tạo và thoát sdl
+
+- ban đầu vào game hiển thị bảng chọn menu, khi ấn "play" gọi hàm play bắt đầu chơi, chơi xong xóa dữ liệu rồi trở lại hàm menu chờ thao tác tiếp.
 
 - game sử dụng các hàm load ảnh, load chữ từ trang lazyfoo
 - game tham khảo đồ họa và lối chơi tại " http://www.trochoiviet.com/phong-thu-vung-bien/game.html "
