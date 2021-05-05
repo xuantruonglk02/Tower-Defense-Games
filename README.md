@@ -33,7 +33,7 @@
 
 - link video demo: " https://youtu.be/qvo4eX0AnXw "
 
-- điểm tự chấm: 8
+- điểm tự chấm: 9
 
 - phiên bản sau phát triển thêm:
     - thêm map
